@@ -25,4 +25,9 @@ public class ClassEntity extends Entity {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String toString() {
+        return "ID: " + id + "\n" +
+               "Nome: " + name + "\n";
+    }
 }

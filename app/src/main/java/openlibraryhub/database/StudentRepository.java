@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static openlibraryhub.Console.clean;
 import static openlibraryhub.Console.println;
@@ -16,6 +18,93 @@ import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.interfaces.CRUDRepository;
 
 public class StudentRepository implements CRUDRepository<StudentEntity> {
+    public StudentEntity save(StudentEntity entity) {
+        try {
+            Assert.notNull(entity, "O estudante não pode ser nulo!");
+            Assert.notEmpty(entity.getName(), "Nome inválido!");
+            Assert.notNull(entity.getClassEntity(), "Turma inválida!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "INSERT INTO students (name, class_id) VALUES (?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            int i = 0;
+            pstmt.setString(++i, entity.getName());
+            pstmt.setInt(++i, entity.getClassEntity().getId());
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if (rs.next()) {
+                entity.setId(rs.getInt(1));
+            }
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+
+        return entity;
+    }
+
+    public StudentEntity update(StudentEntity entity) {
+        try {
+            Assert.notNull(entity, "O estudante não pode ser nulo!");
+            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.notEmpty(entity.getName(), "Nome inválido!");
+            Assert.notNull(entity.getClassEntity(), "Turma inválida!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "UPDATE students SET name = ?, class_id = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setString(++i, entity.getName());
+            pstmt.setInt(++i, entity.getClassEntity().getId());
+            pstmt.setInt(++i, entity.getId());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+
+        return entity;
+    }
+
+    public void delete(StudentEntity entity) {
+        try {
+            Assert.notNull(entity, "O estudante não pode ser nulo!");
+            Assert.notNull(entity.getId(), "ID inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "DELETE FROM students WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setInt(++i, entity.getId());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+    }
+
     public StudentEntity getById(int id) {
         StudentEntity entity = null;
 
@@ -50,46 +139,34 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
         return entity;
     }
 
-    public StudentEntity save(StudentEntity entity) {
-        try {
-            Assert.notNull(entity, "O estudante não pode ser nulo!");
-            Assert.notEmpty(entity.getName(), "Nome inválido!");
-            Assert.notNull(entity.getClassEntity(), "Turma inválida!");
+    public List<StudentEntity> getAll() {
+        List<StudentEntity> entities = new ArrayList<>();
 
+        try {
             Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
                                                           Constants.DB_USER, Constants.DB_PASSWORD);
 
-            String sql = "INSERT INTO students (name, class_id) VALUES (?, ?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql = "SELECT * FROM students";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
 
-            int i = 0;
-            pstmt.setString(++i, entity.getName());
-            pstmt.setInt(++i, entity.getClassEntity().getId());
-            pstmt.executeUpdate();
-
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                entity.setId(rs.getInt(1));
+            while (rs.next()) {
+                StudentEntity entity = new StudentEntity();
+                entity.setId(rs.getInt("id"));
+                entity.setName(rs.getString("name"));
+                entity.setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
+                entities.add(entity);
             }
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException e) {
             clean();
             e.printStackTrace();
             println("");
         }
 
-        return entity;
-    }
-
-    public StudentEntity update(StudentEntity t) {
-        // TODO
-        return null;
-    }
-
-    public void delete(StudentEntity t) {
-        // TODO
+        return entities;
     }
 
     private StudentRepository() {}

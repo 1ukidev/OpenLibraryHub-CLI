@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static openlibraryhub.Console.clean;
 import static openlibraryhub.Console.println;
@@ -16,6 +18,88 @@ import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.interfaces.CRUDRepository;
 
 public class ClassRepository implements CRUDRepository<ClassEntity> {
+    public ClassEntity save(ClassEntity entity) {
+        try {
+            Assert.notNull(entity, "A turma não pode ser nula!");
+            Assert.notEmpty(entity.getName(), "Nome inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "INSERT INTO classes (name) VALUES (?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            int i = 0;
+            pstmt.setString(++i, entity.getName());
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if (rs.next()) {
+                entity.setId(rs.getInt(1));
+            }
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+
+        return entity;
+    }
+
+    public ClassEntity update(ClassEntity entity) {
+        try {
+            Assert.notNull(entity, "A turma não pode ser nula!");
+            Assert.notNull(entity.getId(), "ID inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "UPDATE classes SET name = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setString(++i, entity.getName());
+            pstmt.setInt(++i, entity.getId());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+
+        return entity;
+    }
+
+    public void delete(ClassEntity entity) {
+        try {
+            Assert.notNull(entity, "A turma não pode ser nula!");
+            Assert.notNull(entity.getId(), "ID inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "DELETE FROM classes WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setInt(++i, entity.getId());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalArgumentException e) {
+            clean();
+            e.printStackTrace();
+            println("");
+        }
+    }
+
     public ClassEntity getById(int id) {
         ClassEntity entity = null;
 
@@ -49,44 +133,33 @@ public class ClassRepository implements CRUDRepository<ClassEntity> {
         return entity;
     }
 
-    public ClassEntity save(ClassEntity entity) {
-        try {
-            Assert.notNull(entity, "A turma não pode ser nula!");
-            Assert.notEmpty(entity.getName(), "Nome inválido!");
+    public List<ClassEntity> getAll() {
+        List<ClassEntity> entities = new ArrayList<>();
 
+        try {
             Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
                                                           Constants.DB_USER, Constants.DB_PASSWORD);
 
-            String sql = "INSERT INTO classes (name) VALUES (?)";
-            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql = "SELECT * FROM classes";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
-            int i = 0;
-            pstmt.setString(++i, entity.getName());
-            pstmt.executeUpdate();
-
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                entity.setId(rs.getInt(1));
+            while (rs.next()) {
+                ClassEntity entity = new ClassEntity();
+                entity.setId(rs.getInt("id"));
+                entity.setName(rs.getString("name"));
+                entities.add(entity);
             }
 
-            pstmt.close();
+            stmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException e) {
             clean();
             e.printStackTrace();
             println("");
         }
 
-        return entity;
-    }
-
-    public ClassEntity update(ClassEntity t) {
-        // TODO
-        return null;
-    }
-
-    public void delete(ClassEntity t) {
-        // TODO
+        return entities;
     }
 
     private ClassRepository() {}

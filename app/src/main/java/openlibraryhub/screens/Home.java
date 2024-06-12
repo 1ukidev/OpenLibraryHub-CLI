@@ -1,4 +1,4 @@
-package openlibraryhub;
+package openlibraryhub.screens;
 
 import static java.lang.System.exit;
 

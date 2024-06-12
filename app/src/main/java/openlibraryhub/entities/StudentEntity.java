@@ -35,4 +35,10 @@ public class StudentEntity extends Entity {
     public void setClassEntity(ClassEntity classEntity) {
         this.classEntity = classEntity;
     }
+
+    public String toString() {
+        return "ID: " + id + "\n" +
+               "Nome: " + name + "\n" +
+               "Turma: " + classEntity.getName() + "\n";
+    }
 }

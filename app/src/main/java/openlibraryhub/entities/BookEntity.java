@@ -77,4 +77,14 @@ public class BookEntity extends Entity {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+
+    public String toString() {
+        return "ID: " + id + "\n" +
+               "Título: " + title + "\n" +
+               "Autor: " + author + "\n" +
+               "Seção: " + section + "\n" +
+               "Páginas: " + pages + "\n" +
+               "Ano: " + year + "\n" +
+               "Estoque: " + stock + "\n";
+    }
 }
