@@ -13,10 +13,11 @@ import static openlibraryhub.Console.println;
 import openlibraryhub.Assert;
 import openlibraryhub.Constants;
 import openlibraryhub.entities.ClassEntity;
+import openlibraryhub.interfaces.CRUDRepository;
 
-public class ClassRepository {
-    public static ClassEntity getById(int id) {
-        ClassEntity classEntity = null;
+public class ClassRepository implements CRUDRepository<ClassEntity> {
+    public ClassEntity getById(int id) {
+        ClassEntity entity = null;
 
         try {
             Assert.notNull(id, "ID inválido!");
@@ -32,9 +33,9 @@ public class ClassRepository {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                classEntity = new ClassEntity();
-                classEntity.setId(rs.getInt("id"));
-                classEntity.setName(rs.getString("name"));
+                entity = new ClassEntity();
+                entity.setId(rs.getInt("id"));
+                entity.setName(rs.getString("name"));
             }
 
             pstmt.close();
@@ -45,13 +46,13 @@ public class ClassRepository {
             println("");
         }
 
-        return classEntity;
+        return entity;
     }
 
-    public static ClassEntity save(ClassEntity classEntity) {
+    public ClassEntity save(ClassEntity entity) {
         try {
-            Assert.notNull(classEntity, "A turma não pode ser nula!");
-            Assert.notEmpty(classEntity.getName(), "Nome inválido!");
+            Assert.notNull(entity, "A turma não pode ser nula!");
+            Assert.notEmpty(entity.getName(), "Nome inválido!");
 
             Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
                                                           Constants.DB_USER, Constants.DB_PASSWORD);
@@ -60,12 +61,12 @@ public class ClassRepository {
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             int i = 0;
-            pstmt.setString(++i, classEntity.getName());
+            pstmt.setString(++i, entity.getName());
             pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
-                classEntity.setId(rs.getInt(1));
+                entity.setId(rs.getInt(1));
             }
 
             pstmt.close();
@@ -76,14 +77,23 @@ public class ClassRepository {
             println("");
         }
 
-        return classEntity;
+        return entity;
     }
 
-    public static void update(ClassEntity t) {
+    public ClassEntity update(ClassEntity t) {
+        // TODO
+        return null;
+    }
+
+    public void delete(ClassEntity t) {
         // TODO
     }
 
-    public static void delete(ClassEntity t) {
-        // TODO
+    private ClassRepository() {}
+
+    private static final ClassRepository instance = new ClassRepository();
+
+    public static synchronized ClassRepository getInstance() {
+        return instance;
     }
 }

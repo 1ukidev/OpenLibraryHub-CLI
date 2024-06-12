@@ -10,9 +10,10 @@ import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.database.ClassRepository;
 import openlibraryhub.entities.ClassEntity;
+import openlibraryhub.interfaces.CRUDScreen;
 
-public class Classes {
-    public static void welcome() {
+public class Classes implements CRUDScreen {
+    public void welcome() {
         boolean running = true;
         while (running) {
             println("1 - Cadastrar turma");
@@ -26,15 +27,15 @@ public class Classes {
         }
     }
 
-    private static final Map<Integer, Runnable> options = Map.of(
-        1, Classes::create,
+    private final Map<Integer, Runnable> options = Map.of(
+        1, () -> Classes.getInstance().create(),
         2, () -> println("TODO\n"),
         3, () -> println("TODO\n"),
         4, () -> println("TODO\n"),
         5, () -> println("Voltando ao menu principal...\n")
     );
 
-    public static boolean handleOption() {
+    public boolean handleOption() {
         try {
             int opcao = scanner.nextInt();
             clean();
@@ -55,13 +56,13 @@ public class Classes {
         return true;
     }
 
-    public static void create() {
+    public void create() {
         try {
             scanner.nextLine();
             print("Digite o nome da turma: ");
             String name = scanner.nextLine();
 
-            ClassEntity classEntity = ClassRepository.save(new ClassEntity(name));
+            ClassEntity classEntity = ClassRepository.getInstance().save(new ClassEntity(name));
 
             if (classEntity != null && classEntity.getId() != null) {
                 clean();
@@ -74,5 +75,13 @@ public class Classes {
             println("Entrada inválida. Por favor, tente novamente.\n");
             scanner.next();
         }
+    }
+
+    private Classes() {}
+
+    private static final Classes instance = new Classes();
+
+    public static synchronized Classes getInstance() {
+        return instance;
     }
 }

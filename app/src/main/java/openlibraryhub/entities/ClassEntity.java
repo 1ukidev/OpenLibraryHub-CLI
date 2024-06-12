@@ -1,14 +1,10 @@
 package openlibraryhub.entities;
 
-import openlibraryhub.interfaces.Entity;
-
 public class ClassEntity extends Entity {
     private Integer id;
     private String name;
 
-    public ClassEntity() {
-        
-    }
+    public ClassEntity() {}
 
     public ClassEntity(String name) {
         this.name = name;

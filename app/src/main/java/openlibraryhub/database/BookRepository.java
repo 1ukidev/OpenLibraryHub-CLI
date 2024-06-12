@@ -13,10 +13,11 @@ import static openlibraryhub.Console.println;
 import openlibraryhub.Assert;
 import openlibraryhub.Constants;
 import openlibraryhub.entities.BookEntity;
+import openlibraryhub.interfaces.CRUDRepository;
 
-public class BookRepository {
-    public static BookEntity getById(int id) {
-        BookEntity bookEntity = null;    
+public class BookRepository implements CRUDRepository<BookEntity> {
+    public BookEntity getById(int id) {
+        BookEntity entity = null;    
 
         try {
             Assert.notNull(id, "ID inválido!");
@@ -32,14 +33,14 @@ public class BookRepository {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                bookEntity = new BookEntity();
-                bookEntity.setId(rs.getInt("id"));
-                bookEntity.setTitle(rs.getString("title"));
-                bookEntity.setAuthor(rs.getString("author"));
-                bookEntity.setSection(rs.getString("section"));
-                bookEntity.setPages(rs.getInt("pages"));
-                bookEntity.setYear(rs.getInt("year"));
-                bookEntity.setStock(rs.getInt("stock"));
+                entity = new BookEntity();
+                entity.setId(rs.getInt("id"));
+                entity.setTitle(rs.getString("title"));
+                entity.setAuthor(rs.getString("author"));
+                entity.setSection(rs.getString("section"));
+                entity.setPages(rs.getInt("pages"));
+                entity.setYear(rs.getInt("year"));
+                entity.setStock(rs.getInt("stock"));
             }
 
             pstmt.close();
@@ -50,18 +51,18 @@ public class BookRepository {
             println("");
         }
 
-        return bookEntity;
+        return entity;
     }
 
-    public static BookEntity save(BookEntity bookEntity) {
+    public BookEntity save(BookEntity entity) {
         try {
-            Assert.notNull(bookEntity, "O livro não pode ser nulo!");
-            Assert.notEmpty(bookEntity.getTitle(), "Título inválido!");
-            Assert.notEmpty(bookEntity.getAuthor(), "Autor inválido!");
-            Assert.notEmpty(bookEntity.getSection(), "Seção inválida!");
-            Assert.notNull(bookEntity.getPages(), "Quantidade de páginas inválidas!");
-            Assert.notNull(bookEntity.getYear(), "Ano inválido!");
-            Assert.notNull(bookEntity.getStock(), "Quantidade em estoque inválido!");
+            Assert.notNull(entity, "O livro não pode ser nulo!");
+            Assert.notEmpty(entity.getTitle(), "Título inválido!");
+            Assert.notEmpty(entity.getAuthor(), "Autor inválido!");
+            Assert.notEmpty(entity.getSection(), "Seção inválida!");
+            Assert.notNull(entity.getPages(), "Quantidade de páginas inválidas!");
+            Assert.notNull(entity.getYear(), "Ano inválido!");
+            Assert.notNull(entity.getStock(), "Quantidade em estoque inválido!");
 
             Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
                                                           Constants.DB_USER, Constants.DB_PASSWORD);
@@ -70,17 +71,17 @@ public class BookRepository {
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             int i = 0;
-            pstmt.setString(++i, bookEntity.getTitle());
-            pstmt.setString(++i, bookEntity.getAuthor());
-            pstmt.setString(++i, bookEntity.getSection());
-            pstmt.setInt(++i, bookEntity.getPages());
-            pstmt.setInt(++i, bookEntity.getYear());
-            pstmt.setInt(++i, bookEntity.getStock());
+            pstmt.setString(++i, entity.getTitle());
+            pstmt.setString(++i, entity.getAuthor());
+            pstmt.setString(++i, entity.getSection());
+            pstmt.setInt(++i, entity.getPages());
+            pstmt.setInt(++i, entity.getYear());
+            pstmt.setInt(++i, entity.getStock());
             pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
-                bookEntity.setId(rs.getInt(1));
+                entity.setId(rs.getInt(1));
             }
 
             pstmt.close();
@@ -91,14 +92,23 @@ public class BookRepository {
             println("");
         }
 
-        return bookEntity;
+        return entity;
     }
 
-    public static void update(BookEntity book) {
+    public BookEntity update(BookEntity book) {
+        // TODO
+        return null;
+    }
+
+    public void delete(BookEntity book) {
         // TODO
     }
 
-    public static void delete(BookEntity book) {
-        // TODO
+    private BookRepository() {}
+
+    private static final BookRepository instance = new BookRepository();
+
+    public static synchronized BookRepository getInstance() {
+        return instance;
     }
 }

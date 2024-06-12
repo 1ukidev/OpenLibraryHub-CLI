@@ -12,9 +12,10 @@ import openlibraryhub.database.ClassRepository;
 import openlibraryhub.database.StudentRepository;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.entities.StudentEntity;
+import openlibraryhub.interfaces.CRUDScreen;
 
-public class Students {
-    public static void welcome() {
+public class Students implements CRUDScreen {
+    public void welcome() {
         boolean running = true;
         while (running) {
             println("1 - Cadastrar aluno");
@@ -28,15 +29,15 @@ public class Students {
         }
     }
 
-    private static final Map<Integer, Runnable> options = Map.of(
-        1, Students::create,
+    private final Map<Integer, Runnable> options = Map.of(
+        1, () -> Students.getInstance().create(),
         2, () -> println("TODO\n"),
         3, () -> println("TODO\n"),
         4, () -> println("TODO\n"),
         5, () -> println("Voltando ao menu principal...\n")
     );
 
-    public static boolean handleOption() {
+    public boolean handleOption() {
         try {
             int opcao = scanner.nextInt();
             clean();
@@ -57,7 +58,7 @@ public class Students {
         return true;
     }
 
-    public static void create() {
+    public void create() {
         try {
             scanner.nextLine();
             print("Digite o nome do estudante: ");
@@ -65,9 +66,9 @@ public class Students {
 
             print("Digite o id da turma: ");
             int classId = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getById(classId);
+            ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
 
-            StudentEntity studentEntity = StudentRepository.save(new StudentEntity(name, classEntity));
+            StudentEntity studentEntity = StudentRepository.getInstance().save(new StudentEntity(name, classEntity));
 
             if (studentEntity != null && studentEntity.getId() != null) {
                 clean();
@@ -80,5 +81,13 @@ public class Students {
             println("Entrada inválida. Por favor, tente novamente.\n");
             scanner.next();
         }
+    }
+
+    private Students() {}
+
+    private static final Students instance = new Students();
+
+    public static synchronized Students getInstance() {
+        return instance;
     }
 }

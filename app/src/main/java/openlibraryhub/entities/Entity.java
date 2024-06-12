@@ -1,4 +1,4 @@
-package openlibraryhub.interfaces;
+package openlibraryhub.entities;
 
 import java.io.Serializable;
 

@@ -9,10 +9,11 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.entities.BookEntity;
+import openlibraryhub.interfaces.CRUDScreen;
 import openlibraryhub.database.BookRepository;
 
-public class Books {
-    public static void welcome() {
+public class Books implements CRUDScreen {
+    public void welcome() {
         boolean running = true;
         while (running) {
             println("1 - Adicionar Livro");
@@ -26,15 +27,15 @@ public class Books {
         }
     }
 
-    private static final Map<Integer, Runnable> options = Map.of(
-        1, Books::create,
+    private final Map<Integer, Runnable> options = Map.of(
+        1, () -> Books.getInstance().create(),
         2, () -> println("TODO\n"),
         3, () -> println("TODO\n"),
         4, () -> println("TODO\n"),
         5, () -> println("Voltando ao menu principal...\n")
     );
 
-    public static boolean handleOption() {
+    public boolean handleOption() {
         try {
             int opcao = scanner.nextInt();
             clean();
@@ -55,7 +56,7 @@ public class Books {
         return true;
     }
 
-    public static void create() {
+    public void create() {
         try {
             scanner.nextLine();
             print("Digite o nome do livro: ");
@@ -76,9 +77,9 @@ public class Books {
             print("Digite a quantidade em estoque: ");
             int stock = scanner.nextInt();
     
-            BookEntity bookEntity = BookRepository.save(new BookEntity(title, author,
-                                                                       section, pages,
-                                                                       year, stock));
+            BookEntity bookEntity = BookRepository.getInstance().save(new BookEntity(title, author,
+                                                                                     section, pages,
+                                                                                     year, stock));
     
             if (bookEntity != null && bookEntity.getId() != null) {
                 clean();
@@ -91,5 +92,13 @@ public class Books {
             println("Entrada inválida. Por favor, tente novamente.\n");
             scanner.next();
         }
+    }
+
+    private Books() {};
+
+    private static final Books instance = new Books();
+
+    public static synchronized Books getInstance() {
+        return instance;
     }
 }

@@ -1,7 +1,5 @@
 package openlibraryhub.entities;
 
-import openlibraryhub.interfaces.Entity;
-
 public class BookEntity extends Entity {
     private Integer id;
     private String title;
@@ -11,9 +9,7 @@ public class BookEntity extends Entity {
     private Integer year;
     private Integer stock;
 
-    public BookEntity() {
-        
-    }
+    public BookEntity() {}
 
     public BookEntity(String title, String author,
                       String section, Integer pages,
