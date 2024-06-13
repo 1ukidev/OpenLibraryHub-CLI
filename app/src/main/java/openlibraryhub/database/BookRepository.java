@@ -15,6 +15,7 @@ import static openlibraryhub.Console.println;
 import openlibraryhub.Assert;
 import openlibraryhub.Constants;
 import openlibraryhub.entities.BookEntity;
+import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.CRUDRepository;
 
 public class BookRepository implements CRUDRepository<BookEntity> {
@@ -50,7 +51,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException | IllegalObjectException e) {
             clean();
             e.printStackTrace();
             println("");
@@ -88,7 +89,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException | IllegalObjectException e) {
             clean();
             e.printStackTrace();
             println("");
@@ -114,7 +115,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException | IllegalObjectException e) {
             clean();
             e.printStackTrace();
             println("");
@@ -150,7 +151,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalArgumentException e) {
+        } catch (SQLException | IllegalObjectException e) {
             clean();
             e.printStackTrace();
             println("");

@@ -32,11 +32,11 @@ public class Students implements CRUDScreen {
     }
 
     private final Map<Integer, Runnable> options = Map.of(
-        1, () -> Students.getInstance().save(),
-        2, () -> Students.getInstance().update(),
-        3, () -> Students.getInstance().delete(),
-        4, () -> Students.getInstance().search(),
-        5, () -> Students.getInstance().list(),
+        1, () -> save(),
+        2, () -> update(),
+        3, () -> delete(),
+        4, () -> search(),
+        5, () -> list(),
         6, () -> println("Voltando ao menu principal...\n")
     );
 
