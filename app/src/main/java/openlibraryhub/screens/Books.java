@@ -121,24 +121,24 @@ public class Books implements CRUDScreen {
                 scanner.nextLine();
                 print("Digite o novo nome do livro: ");
                 String title = scanner.nextLine();
-                bookEntity.setTitle(title);
                 if (title == null || title.isEmpty()) {
                     throw new EmptyStringException();
                 }
+                bookEntity.setTitle(title);
     
                 print("Digite o novo nome do autor: ");
                 String author = scanner.nextLine();
-                bookEntity.setAuthor(author);
                 if (author == null || author.isEmpty()) {
                     throw new EmptyStringException();
                 }
+                bookEntity.setAuthor(author);
     
                 print("Digite a nova seção: ");
                 String section = scanner.nextLine();
-                bookEntity.setSection(section);
                 if (section == null || section.isEmpty()) {
                     throw new EmptyStringException();
                 }
+                bookEntity.setSection(section);
     
                 print("Digite o novo número de páginas: ");
                 int pages = scanner.nextInt();

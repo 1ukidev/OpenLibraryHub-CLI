@@ -74,6 +74,11 @@ public class Students implements CRUDScreen {
             print("Digite o id da turma: ");
             int classId = scanner.nextInt();
             ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
+            if (classEntity == null) {
+                clean();
+                println("Turma não encontrada.\n");
+                return;
+            }
 
             StudentEntity studentEntity = StudentRepository.getInstance().save(new StudentEntity(name, classEntity));
 
@@ -104,14 +109,19 @@ public class Students implements CRUDScreen {
                 scanner.nextLine();
                 print("Digite o novo nome do estudante: ");
                 String name = scanner.nextLine();
-                studentEntity.setName(name);
                 if (name == null || name.isEmpty()) {
                     throw new EmptyStringException();
                 }
+                studentEntity.setName(name);
 
                 print("Digite o novo id da turma: ");
                 int classId = scanner.nextInt();
                 ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
+                if (classEntity == null) {
+                    clean();
+                    println("Turma não encontrada.\n");
+                    return;
+                }
                 studentEntity.setClassEntity(classEntity);
 
                 StudentEntity updatedStudentEntity = StudentRepository.getInstance().update(studentEntity);
@@ -123,6 +133,7 @@ public class Students implements CRUDScreen {
                     println("Falha ao atualizar estudante.\n");
                 }
             } else {
+                clean();
                 println("Estudante não encontrado.\n");
             }
         } catch (InputMismatchException e) {

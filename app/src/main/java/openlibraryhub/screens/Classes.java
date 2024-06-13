@@ -97,10 +97,10 @@ public class Classes implements CRUDScreen {
                 scanner.nextLine();
                 print("Digite o novo nome da turma: ");
                 String name = scanner.nextLine();
-                classEntity.setName(name);
                 if (name == null || name.isEmpty()) {
                     throw new EmptyStringException();
                 }
+                classEntity.setName(name);
 
                 ClassEntity updatedClassEntity = ClassRepository.getInstance().update(classEntity);
 
