@@ -9,11 +9,14 @@ import static openlibraryhub.Console.print;
 import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
+import openlibraryhub.Util;
 import openlibraryhub.database.ClassRepository;
 import openlibraryhub.database.StudentRepository;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.EmptyStringException;
+import openlibraryhub.exceptions.EntityNotFoundException;
+import openlibraryhub.exceptions.FailedSaveException;
 import openlibraryhub.interfaces.CRUDScreen;
 
 public class Students implements CRUDScreen {
@@ -33,11 +36,11 @@ public class Students implements CRUDScreen {
     }
 
     private final Map<Integer, Runnable> options = Map.of(
-        1, () -> save(),
-        2, () -> update(),
-        3, () -> delete(),
-        4, () -> search(),
-        5, () -> list(),
+        1, this::save,
+        2, this::update,
+        3, this::delete,
+        4, this::search,
+        5, this::list,
         6, () -> println("Voltando ao menu principal...\n")
     );
 
@@ -46,6 +49,7 @@ public class Students implements CRUDScreen {
             int opcao = scanner.nextInt();
             clean();
             Runnable action = options.get(opcao);
+
             if (action != null) {
                 action.run();
                 if (opcao == 6) {
@@ -55,9 +59,7 @@ public class Students implements CRUDScreen {
                 println("Opção inválida!\n");
             }
         } catch (InputMismatchException e) {
-            clean();
-            println("Opção inválida!\n");
-            scanner.next();
+            Util.handleException(e);
         }
         return true;
     }
@@ -75,9 +77,7 @@ public class Students implements CRUDScreen {
             int classId = scanner.nextInt();
             ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
             if (classEntity == null) {
-                clean();
-                println("Turma não encontrada.\n");
-                return;
+                throw new EntityNotFoundException(ClassEntity.class);
             }
 
             StudentEntity studentEntity = StudentRepository.getInstance().save(new StudentEntity(name, classEntity));
@@ -86,15 +86,13 @@ public class Students implements CRUDScreen {
                 clean();
                 println("Estudante cadastrado com sucesso!\n");
             } else {
-                println("Falha ao cadastrar estudante.\n");
+                throw new FailedSaveException(StudentEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
-        } catch (EmptyStringException e) {
-            clean();
-            println("Entrada vazia detectada. Por favor, tente novamente.\n");
+        } catch (InputMismatchException
+                | EmptyStringException
+                | EntityNotFoundException
+                | FailedSaveException e) {
+            Util.handleException(e);
         }
     }
 
@@ -105,44 +103,39 @@ public class Students implements CRUDScreen {
             int id = scanner.nextInt();
             StudentEntity studentEntity = StudentRepository.getInstance().getById(id);
 
-            if (studentEntity != null) {
-                scanner.nextLine();
-                print("Digite o novo nome do estudante: ");
-                String name = scanner.nextLine();
-                if (name == null || name.isEmpty()) {
-                    throw new EmptyStringException();
-                }
-                studentEntity.setName(name);
-
-                print("Digite o novo id da turma: ");
-                int classId = scanner.nextInt();
-                ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
-                if (classEntity == null) {
-                    clean();
-                    println("Turma não encontrada.\n");
-                    return;
-                }
-                studentEntity.setClassEntity(classEntity);
-
-                StudentEntity updatedStudentEntity = StudentRepository.getInstance().update(studentEntity);
-
-                if (updatedStudentEntity != null && updatedStudentEntity.getId() != null) {
-                    clean();
-                    println("Estudante atualizado com sucesso!\n");
-                } else {
-                    println("Falha ao atualizar estudante.\n");
-                }
-            } else {
-                clean();
-                println("Estudante não encontrado.\n");
+            if (studentEntity == null) {
+                throw new EntityNotFoundException(StudentEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
-        } catch (EmptyStringException e) {
-            clean();
-            println("Entrada vazia detectada. Por favor, tente novamente.\n");
+
+            scanner.nextLine();
+            print("Digite o novo nome do estudante: ");
+            String name = scanner.nextLine();
+            if (name == null || name.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            studentEntity.setName(name);
+
+            print("Digite o novo id da turma: ");
+            int classId = scanner.nextInt();
+            ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
+            if (classEntity == null) {
+                throw new EntityNotFoundException(ClassEntity.class);
+            }
+            studentEntity.setClassEntity(classEntity);
+
+            StudentEntity updatedStudentEntity = StudentRepository.getInstance().update(studentEntity);
+
+            if (updatedStudentEntity != null && updatedStudentEntity.getId() != null) {
+                clean();
+                println("Estudante atualizado com sucesso!\n");
+            } else {
+                throw new FailedSaveException(StudentEntity.class);
+            }
+        } catch (InputMismatchException
+                | EmptyStringException
+                | EntityNotFoundException
+                | FailedSaveException e) {
+            Util.handleException(e);
         }
     }
 
@@ -157,13 +150,10 @@ public class Students implements CRUDScreen {
                 StudentRepository.getInstance().delete(studentEntity);
                 println("");
             } else {
-                clean();
-                println("Estudante não encontrado.\n");
+                throw new EntityNotFoundException(StudentEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
         }
     }
 
@@ -178,13 +168,10 @@ public class Students implements CRUDScreen {
                 println("Estudante encontrado!\n");
                 println(studentEntity.toString());
             } else {
-                clean();
-                println("Estudante não encontrado!\n");
+                throw new EntityNotFoundException(StudentEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
         }
     }
 
@@ -193,7 +180,7 @@ public class Students implements CRUDScreen {
         if (!students.isEmpty()) {
             students.forEach(studentEntity -> println(studentEntity.toString()));
         } else {
-            println("Nenhum estudante cadastrado.\n");
+            println("Nenhuma StudentEntity encontrada!\n");
         }
     }
 

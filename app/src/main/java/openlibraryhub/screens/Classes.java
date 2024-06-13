@@ -9,9 +9,12 @@ import static openlibraryhub.Console.print;
 import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
+import openlibraryhub.Util;
 import openlibraryhub.database.ClassRepository;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.exceptions.EmptyStringException;
+import openlibraryhub.exceptions.EntityNotFoundException;
+import openlibraryhub.exceptions.FailedSaveException;
 import openlibraryhub.interfaces.CRUDScreen;
 
 public class Classes implements CRUDScreen {
@@ -31,11 +34,11 @@ public class Classes implements CRUDScreen {
     }
 
     private final Map<Integer, Runnable> options = Map.of(
-        1, () -> save(),
-        2, () -> update(),
-        3, () -> delete(),
-        4, () -> search(),
-        5, () -> list(),
+        1, this::save,
+        2, this::update,
+        3, this::delete,
+        4, this::search,
+        5, this::list,
         6, () -> println("Voltando ao menu principal...\n")
     );
 
@@ -44,6 +47,7 @@ public class Classes implements CRUDScreen {
             int opcao = scanner.nextInt();
             clean();
             Runnable action = options.get(opcao);
+
             if (action != null) {
                 action.run();
                 if (opcao == 6) {
@@ -53,9 +57,7 @@ public class Classes implements CRUDScreen {
                 println("Opção inválida!\n");
             }
         } catch (InputMismatchException e) {
-            clean();
-            println("Opção inválida!\n");
-            scanner.next();
+            Util.handleException(e);
         }
         return true;
     }
@@ -75,15 +77,12 @@ public class Classes implements CRUDScreen {
                 clean();
                 println("Turma cadastrada com sucesso!\n");
             } else {
-                println("Falha ao cadastrar turma!\n");
+                throw new FailedSaveException(ClassEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
-        } catch (EmptyStringException e) {
-            clean();
-            println("Entrada vazia detectada. Por favor, tente novamente.\n");
+        } catch (InputMismatchException
+                | EmptyStringException
+                | FailedSaveException e) {
+            Util.handleException(e);
         }
     }
 
@@ -93,34 +92,31 @@ public class Classes implements CRUDScreen {
             int id = scanner.nextInt();
             ClassEntity classEntity = ClassRepository.getInstance().getById(id);
 
-            if (classEntity != null) {
-                scanner.nextLine();
-                print("Digite o novo nome da turma: ");
-                String name = scanner.nextLine();
-                if (name == null || name.isEmpty()) {
-                    throw new EmptyStringException();
-                }
-                classEntity.setName(name);
-
-                ClassEntity updatedClassEntity = ClassRepository.getInstance().update(classEntity);
-
-                if (updatedClassEntity != null && updatedClassEntity.getId() != null) {
-                    clean();
-                    println("Turma atualizada com sucesso!\n");
-                } else {
-                    println("Falha ao atualizar turma!\n");
-                }
-            } else {
-                clean();
-                println("Turma não encontrada!\n");
+            if (classEntity == null) {
+                throw new EntityNotFoundException(ClassEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
-        } catch (EmptyStringException e) {
-            clean();
-            println("Entrada vazia detectada. Por favor, tente novamente.\n");
+
+            scanner.nextLine();
+            print("Digite o novo nome da turma: ");
+            String name = scanner.nextLine();
+            if (name == null || name.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            classEntity.setName(name);
+
+            ClassEntity updatedClassEntity = ClassRepository.getInstance().update(classEntity);
+
+            if (updatedClassEntity != null && updatedClassEntity.getId() != null) {
+                clean();
+                println("Turma atualizada com sucesso!\n");
+            } else {
+                throw new FailedSaveException(ClassEntity.class);
+            }
+        } catch (InputMismatchException
+                | EmptyStringException
+                | EntityNotFoundException
+                | FailedSaveException e) {
+            Util.handleException(e);
         }
     }
 
@@ -134,13 +130,10 @@ public class Classes implements CRUDScreen {
                 ClassRepository.getInstance().delete(classEntity);
                 println("");
             } else {
-                clean();
-                println("Turma não encontrada!\n");
+                throw new EntityNotFoundException(ClassEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
         }
     }
 
@@ -155,13 +148,10 @@ public class Classes implements CRUDScreen {
                 println("Turma encontrada!\n");
                 println(classEntity.toString());
             } else {
-                clean();
-                println("Turma não encontrada!\n");
+                throw new EntityNotFoundException(ClassEntity.class);
             }
-        } catch (InputMismatchException e) {
-            clean();
-            println("Entrada inválida. Por favor, tente novamente.\n");
-            scanner.next();
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
         }
     }
 
@@ -170,7 +160,7 @@ public class Classes implements CRUDScreen {
         if (!classes.isEmpty()) {
             classes.forEach(classEntity -> println(classEntity.toString()));
         } else {
-            println("Nenhuma turma cadastrada!\n");
+            println("Nenhuma ClassEntity encontrada!\n");
         }
     }
 

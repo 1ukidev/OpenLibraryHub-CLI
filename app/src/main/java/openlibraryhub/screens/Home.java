@@ -11,6 +11,7 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 import static openlibraryhub.Util.greet;
 
+import openlibraryhub.Util;
 import openlibraryhub.interfaces.Screen;
 
 public class Home implements Screen {
@@ -23,8 +24,9 @@ public class Home implements Screen {
             println("1 - Livros");
             println("2 - Turmas");
             println("3 - Alunos");
-            println("4 - Outros");
-            println("5 - Sair");
+            println("4 - Empréstimo");
+            println("5 - Outros");
+            println("6 - Sair");
             print("--> ");
 
             running = handleOption();
@@ -35,8 +37,9 @@ public class Home implements Screen {
         1, () -> Books.getInstance().welcome(),
         2, () -> Classes.getInstance().welcome(),
         3, () -> Students.getInstance().welcome(),
-        4, () -> Others.getInstance().welcome(),
-        5, () -> {
+        4, () -> Loans.getInstance().welcome(),
+        5, () -> Others.getInstance().welcome(),
+        6, () -> {
             println("Até mais!");
             exit(0);
         }
@@ -47,15 +50,14 @@ public class Home implements Screen {
             int opcao = scanner.nextInt();
             clean();
             Runnable action = options.get(opcao);
+
             if (action != null) {
                 action.run();
             } else {
                 println("Opção inválida!\n");
             }
         } catch (InputMismatchException e) {
-            clean();
-            println("Opção inválida!\n");
-            scanner.next();
+            Util.handleException(e);
         }
         return true;
     }

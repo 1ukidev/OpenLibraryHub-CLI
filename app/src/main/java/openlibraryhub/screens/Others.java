@@ -9,6 +9,7 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.Constants;
+import openlibraryhub.Util;
 import openlibraryhub.interfaces.Screen;
 
 public class Others implements Screen {
@@ -33,6 +34,7 @@ public class Others implements Screen {
             int opcao = scanner.nextInt();
             clean();
             Runnable action = options.get(opcao);
+
             if (action != null) {
                 action.run();
                 if (opcao == 2) {
@@ -42,9 +44,7 @@ public class Others implements Screen {
                 println("Opção inválida!\n");
             }
         } catch (InputMismatchException e) {
-            clean();
-            println("Opção inválida!\n");
-            scanner.next();
+            Util.handleException(e);
         }
         return true;
     }

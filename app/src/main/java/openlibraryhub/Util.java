@@ -3,8 +3,16 @@ package openlibraryhub;
 import static java.lang.System.exit;
 
 import java.time.LocalTime;
+import java.util.InputMismatchException;
 
+import static openlibraryhub.Console.clean;
 import static openlibraryhub.Console.println;
+import static openlibraryhub.Console.scanner;
+
+import openlibraryhub.exceptions.EmptyStringException;
+import openlibraryhub.exceptions.EntityNotFoundException;
+import openlibraryhub.exceptions.FailedSaveException;
+import openlibraryhub.exceptions.FailedUpdateException;
 
 public class Util {
     public static String greet() {
@@ -19,9 +27,28 @@ public class Util {
     }
 
     public static void checkSystem() {
-        if (Constants.DB_URL == null || Constants.DB_USER == null || Constants.DB_PASSWORD == null || Constants.DB_SCHEMA == null) {
-            println("Por favor, defina as variáveis de ambiente OLH_DB_URL, OLH_DB_USER, OLH_DB_PASSWORD e OLH_DB_SCHEMA.");
+        if (Constants.DB_URL == null || Constants.DB_USER == null
+                || Constants.DB_PASSWORD == null || Constants.DB_SCHEMA == null) {
+            println(Errors.INVALID_DB_MESSAGE);
             exit(1);
+        }
+    }
+
+    public static void handleException(Exception e) {
+        clean();
+
+        if (e instanceof InputMismatchException) {
+            println(Errors.INVALID_INPUT_MESSAGE);
+            scanner.next();
+        } else if (e instanceof EmptyStringException) {
+            println(Errors.EMPTY_INPUT_MESSAGE);
+        } else if (e instanceof FailedSaveException || e instanceof FailedUpdateException
+                                                    || e instanceof EntityNotFoundException) {
+            println(e.getMessage() + "\n");
+        } else {
+            println(Errors.UNEXPECTED_ERROR_MESSAGE);
+            e.printStackTrace();
+            println("");
         }
     }
 }
