@@ -9,6 +9,7 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.Constants;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.interfaces.Screen;
 
@@ -41,7 +42,7 @@ public class Others implements Screen {
                     return false;
                 }
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);

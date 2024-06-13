@@ -1,6 +1,8 @@
 package openlibraryhub.screens;
 
+import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Map;
 
 import static openlibraryhub.Console.clean;
@@ -9,7 +11,17 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.interfaces.CRUDScreen;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
+import openlibraryhub.database.BookRepository;
+import openlibraryhub.database.LoanRepository;
+import openlibraryhub.database.StudentRepository;
+import openlibraryhub.entities.BookEntity;
+import openlibraryhub.entities.LoanEntity;
+import openlibraryhub.entities.StudentEntity;
+import openlibraryhub.exceptions.EmptyStringException;
+import openlibraryhub.exceptions.EntityNotFoundException;
+import openlibraryhub.exceptions.IllegalDateException;
 
 public class Loans implements CRUDScreen {
     public void welcome() {
@@ -48,7 +60,7 @@ public class Loans implements CRUDScreen {
                     return false;
                 }
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);
@@ -57,28 +69,165 @@ public class Loans implements CRUDScreen {
     }
 
     public void save() {
-        // TODO
-        println("TODO\n");
+        try {
+            scanner.nextLine();
+            print("Digite o id do livro: ");
+            int bookId = scanner.nextInt();
+            BookEntity bookEntity = BookRepository.getInstance().getById(bookId);
+            if (bookEntity == null) {
+                throw new EntityNotFoundException(BookEntity.class);
+            }
+
+            print("Digite o id do estudante: ");
+            int studentId = scanner.nextInt();
+            StudentEntity studentEntity = StudentRepository.getInstance().getById(studentId);
+            if (studentEntity == null) {
+                throw new EntityNotFoundException(StudentEntity.class);
+            }
+
+            scanner.nextLine();
+            print("Digite a data de empréstimo (dd/mm/aaaa): ");
+            String loanDate = scanner.nextLine();
+            if (loanDate == null || loanDate.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            if (!Util.isDate(loanDate)) {
+                throw new IllegalDateException("Data inválida!");
+            }
+            Date convertedLoanDate = Util.convertStringToDate(loanDate);
+
+            print("Digite a data de devolução (dd/mm/aaaa): ");
+            String returnDate = scanner.nextLine();
+            if (returnDate == null || returnDate.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            if (!Util.isDate(returnDate)) {
+                throw new IllegalDateException("Data inválida!");
+            }
+            Date convertedReturnDate = Util.convertStringToDate(returnDate);
+
+            LoanEntity loanEntity = LoanRepository.getInstance().save(new LoanEntity(bookEntity, studentEntity,
+                                                                                     convertedLoanDate, convertedReturnDate));
+
+            if (loanEntity != null && loanEntity.getId() != null) {
+                clean();
+                println("Empréstimo cadastrado com sucesso!\n");
+            }
+        } catch (InputMismatchException
+                | EntityNotFoundException
+                | IllegalDateException
+                | EmptyStringException e) {
+            Util.handleException(e);
+        }
     }
 
     public void update() {
-        // TODO
-        println("TODO\n");
+        try {
+            scanner.nextLine();
+            print("Digite o id do empréstimo: ");
+            int id = scanner.nextInt();
+            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+
+            if (loanEntity == null) {
+                throw new EntityNotFoundException(LoanEntity.class);
+            }
+
+            print("Digite o id do livro: ");
+            int bookId = scanner.nextInt();
+            BookEntity bookEntity = BookRepository.getInstance().getById(bookId);
+            if (bookEntity == null) {
+                throw new EntityNotFoundException(BookEntity.class);
+            }
+
+            print("Digite o id do estudante: ");
+            int studentId = scanner.nextInt();
+            StudentEntity studentEntity = StudentRepository.getInstance().getById(studentId);
+            if (studentEntity == null) {
+                throw new EntityNotFoundException(StudentEntity.class);
+            }
+
+            scanner.nextLine();
+            print("Digite a data de empréstimo (dd/mm/aaaa): ");
+            String loanDate = scanner.nextLine();
+            if (loanDate == null || loanDate.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            if (!Util.isDate(loanDate)) {
+                throw new IllegalDateException("Data inválida!");
+            }
+            Date convertedLoanDate = Util.convertStringToDate(loanDate);
+
+            print("Digite a data de devolução (dd/mm/aaaa): ");
+            String returnDate = scanner.nextLine();
+            if (returnDate == null || returnDate.isEmpty()) {
+                throw new EmptyStringException();
+            }
+            if (!Util.isDate(returnDate)) {
+                throw new IllegalDateException("Data inválida!");
+            }
+            Date convertedReturnDate = Util.convertStringToDate(returnDate);
+
+            loanEntity.setBookEntity(bookEntity);
+            loanEntity.setStudentEntity(studentEntity);
+            loanEntity.setLoanDate(convertedLoanDate);
+            loanEntity.setReturnDate(convertedReturnDate);
+
+            LoanEntity updatedLoanEntity = LoanRepository.getInstance().update(loanEntity);
+
+            if (updatedLoanEntity != null && updatedLoanEntity.getId() != null) {
+                clean();
+                println("Empréstimo atualizado com sucesso!\n");
+            }
+        } catch (InputMismatchException
+                | EntityNotFoundException
+                | IllegalDateException
+                | EmptyStringException e) {
+            Util.handleException(e);
+        }
     }
 
     public void delete() {
-        // TODO
-        println("TODO\n");
+        try {
+            print("Digite o id do empréstimo: ");
+            int id = scanner.nextInt();
+            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+
+            if (loanEntity != null) {
+                LoanRepository.getInstance().delete(loanEntity);
+                println("");
+            } else {
+                throw new EntityNotFoundException(LoanEntity.class);
+            }
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
+        }
     }
 
     public void search() {
-        // TODO
-        println("TODO\n");
+        try {
+            print("Digite o id do empréstimo: ");
+            int id = scanner.nextInt();
+            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+
+            if (loanEntity != null) {
+                clean();
+                println("Empréstimo encontrado!\n");
+                println(loanEntity.toString());
+            } else {
+                throw new EntityNotFoundException(LoanEntity.class);
+            }
+        } catch (InputMismatchException | EntityNotFoundException e) {
+            Util.handleException(e);
+        }
     }
 
     public void list() {
-        // TODO
-        println("TODO\n");
+        List<LoanEntity> loans = LoanRepository.getInstance().getAll();
+        if (!loans.isEmpty()) {
+            loans.forEach(loanEntity -> println(loanEntity.toString()));
+        } else {
+            println("Nenhuma LoanEntity encontrado!\n");
+        }
     }
 
     private Loans() {}

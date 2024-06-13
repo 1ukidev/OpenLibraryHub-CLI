@@ -12,9 +12,8 @@ import static openlibraryhub.Console.scanner;
 import openlibraryhub.entities.BookEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
-import openlibraryhub.exceptions.FailedSaveException;
-import openlibraryhub.exceptions.FailedUpdateException;
 import openlibraryhub.interfaces.CRUDScreen;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.BookRepository;
 
@@ -55,7 +54,7 @@ public class Books implements CRUDScreen {
                     return false;
                 }
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);
@@ -100,12 +99,8 @@ public class Books implements CRUDScreen {
             if (bookEntity != null && bookEntity.getId() != null) {
                 clean();
                 println("Livro cadastrado com sucesso!\n");
-            } else {
-                throw new FailedSaveException(BookEntity.class);
             }
-        } catch (InputMismatchException
-                | EmptyStringException
-                | FailedSaveException e) {
+        } catch (InputMismatchException | EmptyStringException e) {
             Util.handleException(e);
         }
     }
@@ -160,13 +155,10 @@ public class Books implements CRUDScreen {
             if (updatedBookEntity != null && updatedBookEntity.getId() != null) {
                 clean();
                 println("Livro atualizado com sucesso!\n");
-            } else {
-                throw new FailedUpdateException(BookEntity.class);
             }
         } catch (InputMismatchException
                 | EmptyStringException
-                | EntityNotFoundException
-                | FailedUpdateException e) {
+                | EntityNotFoundException e) {
             Util.handleException(e);
         }
     }

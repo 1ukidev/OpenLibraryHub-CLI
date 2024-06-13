@@ -9,6 +9,7 @@ import static openlibraryhub.Console.print;
 import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.ClassRepository;
 import openlibraryhub.database.StudentRepository;
@@ -16,7 +17,6 @@ import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
-import openlibraryhub.exceptions.FailedSaveException;
 import openlibraryhub.interfaces.CRUDScreen;
 
 public class Students implements CRUDScreen {
@@ -56,7 +56,7 @@ public class Students implements CRUDScreen {
                     return false;
                 }
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);
@@ -85,13 +85,10 @@ public class Students implements CRUDScreen {
             if (studentEntity != null && studentEntity.getId() != null) {
                 clean();
                 println("Estudante cadastrado com sucesso!\n");
-            } else {
-                throw new FailedSaveException(StudentEntity.class);
             }
         } catch (InputMismatchException
                 | EmptyStringException
-                | EntityNotFoundException
-                | FailedSaveException e) {
+                | EntityNotFoundException e) {
             Util.handleException(e);
         }
     }
@@ -128,13 +125,10 @@ public class Students implements CRUDScreen {
             if (updatedStudentEntity != null && updatedStudentEntity.getId() != null) {
                 clean();
                 println("Estudante atualizado com sucesso!\n");
-            } else {
-                throw new FailedSaveException(StudentEntity.class);
             }
         } catch (InputMismatchException
                 | EmptyStringException
-                | EntityNotFoundException
-                | FailedSaveException e) {
+                | EntityNotFoundException e) {
             Util.handleException(e);
         }
     }

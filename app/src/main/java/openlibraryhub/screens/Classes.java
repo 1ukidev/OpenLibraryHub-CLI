@@ -9,12 +9,12 @@ import static openlibraryhub.Console.print;
 import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.ClassRepository;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
-import openlibraryhub.exceptions.FailedSaveException;
 import openlibraryhub.interfaces.CRUDScreen;
 
 public class Classes implements CRUDScreen {
@@ -54,7 +54,7 @@ public class Classes implements CRUDScreen {
                     return false;
                 }
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);
@@ -76,12 +76,8 @@ public class Classes implements CRUDScreen {
             if (classEntity != null && classEntity.getId() != null) {
                 clean();
                 println("Turma cadastrada com sucesso!\n");
-            } else {
-                throw new FailedSaveException(ClassEntity.class);
             }
-        } catch (InputMismatchException
-                | EmptyStringException
-                | FailedSaveException e) {
+        } catch (InputMismatchException | EmptyStringException e) {
             Util.handleException(e);
         }
     }
@@ -109,13 +105,10 @@ public class Classes implements CRUDScreen {
             if (updatedClassEntity != null && updatedClassEntity.getId() != null) {
                 clean();
                 println("Turma atualizada com sucesso!\n");
-            } else {
-                throw new FailedSaveException(ClassEntity.class);
             }
         } catch (InputMismatchException
                 | EmptyStringException
-                | EntityNotFoundException
-                | FailedSaveException e) {
+                | EntityNotFoundException e) {
             Util.handleException(e);
         }
     }

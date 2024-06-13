@@ -11,6 +11,7 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 import static openlibraryhub.Util.greet;
 
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.interfaces.Screen;
 
@@ -54,7 +55,7 @@ public class Home implements Screen {
             if (action != null) {
                 action.run();
             } else {
-                println("Opção inválida!\n");
+                println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);

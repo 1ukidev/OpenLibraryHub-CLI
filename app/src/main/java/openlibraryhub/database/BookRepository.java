@@ -9,11 +9,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static openlibraryhub.Console.clean;
-import static openlibraryhub.Console.println;
-
 import openlibraryhub.Assert;
 import openlibraryhub.Constants;
+import openlibraryhub.Util;
 import openlibraryhub.entities.BookEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.CRUDRepository;
@@ -52,9 +50,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
             pstmt.close();
             conn.close();
         } catch (SQLException | IllegalObjectException e) {
-            clean();
-            e.printStackTrace();
-            println("");
+            Util.handleException(e);
         }
 
         return entity;
@@ -90,9 +86,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
             pstmt.close();
             conn.close();
         } catch (SQLException | IllegalObjectException e) {
-            clean();
-            e.printStackTrace();
-            println("");
+            Util.handleException(e);
         }
 
         return entity;
@@ -116,9 +110,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
             pstmt.close();
             conn.close();
         } catch (SQLException | IllegalObjectException e) {
-            clean();
-            e.printStackTrace();
-            println("");
+            Util.handleException(e);
         }
     }
 
@@ -152,9 +144,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
             pstmt.close();
             conn.close();
         } catch (SQLException | IllegalObjectException e) {
-            clean();
-            e.printStackTrace();
-            println("");
+            Util.handleException(e);
         }
 
         return entity;
@@ -186,9 +176,7 @@ public class BookRepository implements CRUDRepository<BookEntity> {
             stmt.close();
             conn.close();
         } catch (SQLException e) {
-            clean();
-            e.printStackTrace();
-            println("");
+            Util.handleException(e);
         }
         
         return entities;
