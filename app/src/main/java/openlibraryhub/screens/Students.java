@@ -1,6 +1,7 @@
 package openlibraryhub.screens;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Map;
 
 import static openlibraryhub.Console.clean;
@@ -143,6 +144,7 @@ public class Students implements CRUDScreen {
 
             if (studentEntity != null) {
                 StudentRepository.getInstance().delete(studentEntity);
+                println("");
             } else {
                 clean();
                 println("Estudante não encontrado.\n");
@@ -176,7 +178,12 @@ public class Students implements CRUDScreen {
     }
 
     public void list() {
-        StudentRepository.getInstance().getAll().forEach(student -> println(student.toString()));
+        List<StudentEntity> students = StudentRepository.getInstance().getAll();
+        if (!students.isEmpty()) {
+            students.forEach(studentEntity -> println(studentEntity.toString()));
+        } else {
+            println("Nenhum estudante cadastrado.\n");
+        }
     }
 
     private Students() {}
