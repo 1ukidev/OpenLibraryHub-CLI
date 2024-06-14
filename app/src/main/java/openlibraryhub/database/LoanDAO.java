@@ -168,6 +168,74 @@ public class LoanDAO implements DAO<LoanEntity> {
         return entities;
     }
 
+    public LoanEntity getByStudentId(int studentId) {
+        LoanEntity entity = null;
+
+        try {
+            Assert.notNull(studentId, "ID do estudante inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "SELECT * FROM loans WHERE student_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setInt(++i, studentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                entity = new LoanEntity();
+                entity.setId(rs.getInt("id"))
+                      .setBookEntity(BookDAO.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentDAO.getInstance().getById(rs.getInt("student_id")))
+                      .setLoanDate(rs.getDate("loan_date"))
+                      .setReturnDate(rs.getDate("return_date"));
+            }
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalObjectException e) {
+            Util.handleException(e);
+        }
+
+        return entity;
+    }
+
+    public LoanEntity getByBookId(int bookId) {
+        LoanEntity entity = null;
+
+        try {
+            Assert.notNull(bookId, "ID do livro inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "SELECT * FROM loans WHERE book_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setInt(++i, bookId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                entity = new LoanEntity();
+                entity.setId(rs.getInt("id"))
+                      .setBookEntity(BookDAO.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentDAO.getInstance().getById(rs.getInt("student_id")))
+                      .setLoanDate(rs.getDate("loan_date"))
+                      .setReturnDate(rs.getDate("return_date"));
+            }
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalObjectException e) {
+            Util.handleException(e);
+        }
+
+        return entity;
+    }
+
     private LoanDAO() {}
 
     private static final LoanDAO instance = new LoanDAO();

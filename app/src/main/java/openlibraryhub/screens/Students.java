@@ -12,8 +12,10 @@ import static openlibraryhub.Console.scanner;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.ClassDAO;
+import openlibraryhub.database.LoanDAO;
 import openlibraryhub.database.StudentDAO;
 import openlibraryhub.entities.ClassEntity;
+import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
@@ -140,12 +142,19 @@ public class Students implements CRUDScreen {
             int id = scanner.nextInt();
             StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
-            if (studentEntity != null) {
-                StudentDAO.getInstance().delete(studentEntity);
-                println("");
-            } else {
+            if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
             }
+
+            LoanEntity loanEntity = LoanDAO.getInstance().getByStudentId(id);
+            if (loanEntity != null) {
+                clean();
+                println("O estudante possui empréstimos pendentes e não pode ser excluído!\n");
+                return;
+            }
+
+            StudentDAO.getInstance().delete(studentEntity);
+            println("");
         } catch (InputMismatchException | EntityNotFoundException e) {
             Util.handleException(e);
         }
@@ -174,7 +183,7 @@ public class Students implements CRUDScreen {
         if (!students.isEmpty()) {
             students.forEach(studentEntity -> println(studentEntity.toString()));
         } else {
-            println("Nenhuma StudentEntity encontrada!\n");
+            println("Nenhum estudante encontrado!\n");
         }
     }
 

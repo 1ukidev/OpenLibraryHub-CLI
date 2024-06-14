@@ -158,6 +158,39 @@ public class StudentDAO implements DAO<StudentEntity> {
         return entities;
     }
 
+    public List<StudentEntity> getByClassId(int classId) {
+        List<StudentEntity> entities = new ArrayList<>();
+
+        try {
+            Assert.notNull(classId, "ID inválido!");
+
+            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
+                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+
+            String sql = "SELECT * FROM students WHERE class_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            int i = 0;
+            pstmt.setInt(++i, classId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                StudentEntity entity = new StudentEntity();
+                entity.setId(rs.getInt("id"))
+                      .setName(rs.getString("name"))
+                      .setClassEntity(ClassDAO.getInstance().getById(rs.getInt("class_id")));
+                entities.add(entity);
+            }
+
+            pstmt.close();
+            conn.close();
+        } catch (SQLException | IllegalObjectException e) {
+            Util.handleException(e);
+        }
+
+        return entities;
+    }
+
     private StudentDAO() {}
 
     private static final StudentDAO instance = new StudentDAO();

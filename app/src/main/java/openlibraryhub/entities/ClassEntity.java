@@ -1,5 +1,8 @@
 package openlibraryhub.entities;
 
+import openlibraryhub.annotations.EntityName;
+
+@EntityName("Turma")
 public class ClassEntity extends Entity {
     private Integer id;
     private String name;

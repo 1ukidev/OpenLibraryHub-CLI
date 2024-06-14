@@ -1,5 +1,8 @@
 package openlibraryhub.entities;
 
+import openlibraryhub.annotations.EntityName;
+
+@EntityName("Aluno")
 public class StudentEntity extends Entity {
     private Integer id;
     private String name;

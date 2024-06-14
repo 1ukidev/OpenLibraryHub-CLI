@@ -2,6 +2,9 @@ package openlibraryhub.entities;
 
 import java.util.Date;
 
+import openlibraryhub.annotations.EntityName;
+
+@EntityName("Empréstimo")
 public class LoanEntity extends Entity {
     private Integer id;
     private BookEntity bookEntity;

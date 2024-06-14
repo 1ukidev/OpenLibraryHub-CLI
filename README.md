@@ -1,4 +1,4 @@
-# OpenLibraryHub-CLI (WIP)
+# OpenLibraryHub-CLI
 
 Um sistema para bibliotecas ridiculamente fácil de ser implementado. Agora direto no seu terminal.
 

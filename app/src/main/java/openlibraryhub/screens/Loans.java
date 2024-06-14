@@ -92,7 +92,7 @@ public class Loans implements CRUDScreen {
                 throw new EmptyStringException();
             }
             if (!Util.isDate(loanDate)) {
-                throw new IllegalDateException("Data inválida!");
+                throw new IllegalDateException();
             }
             Date convertedLoanDate = Util.convertStringToDate(loanDate);
 
@@ -102,7 +102,7 @@ public class Loans implements CRUDScreen {
                 throw new EmptyStringException();
             }
             if (!Util.isDate(returnDate)) {
-                throw new IllegalDateException("Data inválida!");
+                throw new IllegalDateException();
             }
             Date convertedReturnDate = Util.convertStringToDate(returnDate);
 
@@ -155,7 +155,7 @@ public class Loans implements CRUDScreen {
                 throw new EmptyStringException();
             }
             if (!Util.isDate(loanDate)) {
-                throw new IllegalDateException("Data inválida!");
+                throw new IllegalDateException();
             }
             Date convertedLoanDate = Util.convertStringToDate(loanDate);
             loanEntity.setLoanDate(convertedLoanDate);
@@ -166,7 +166,7 @@ public class Loans implements CRUDScreen {
                 throw new EmptyStringException();
             }
             if (!Util.isDate(returnDate)) {
-                throw new IllegalDateException("Data inválida!");
+                throw new IllegalDateException();
             }
             Date convertedReturnDate = Util.convertStringToDate(returnDate);
             loanEntity.setReturnDate(convertedReturnDate);
@@ -225,7 +225,7 @@ public class Loans implements CRUDScreen {
         if (!loans.isEmpty()) {
             loans.forEach(loanEntity -> println(loanEntity.toString()));
         } else {
-            println("Nenhuma LoanEntity encontrado!\n");
+            println("Nenhum empréstimo encontrado!\n");
         }
     }
 

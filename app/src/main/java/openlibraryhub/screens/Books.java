@@ -10,12 +10,14 @@ import static openlibraryhub.Console.println;
 import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.entities.BookEntity;
+import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.CRUDScreen;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.BookDAO;
+import openlibraryhub.database.LoanDAO;
 
 public class Books implements CRUDScreen {
     public void welcome() {
@@ -169,12 +171,19 @@ public class Books implements CRUDScreen {
             int id = scanner.nextInt();
             BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
-            if (bookEntity != null) {
-                BookDAO.getInstance().delete(bookEntity);
-                println("");
-            } else {
+            if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
             }
+
+            LoanEntity loanEntity = LoanDAO.getInstance().getByBookId(id);
+            if (loanEntity != null) {
+                clean();
+                println("O livro não pode ser excluído, pois está emprestado!\n");
+                return;
+            }
+
+            BookDAO.getInstance().delete(bookEntity);
+            println("");
         } catch (InputMismatchException | EntityNotFoundException e) {
             Util.handleException(e);
         }
@@ -203,7 +212,7 @@ public class Books implements CRUDScreen {
         if (!books.isEmpty()) {
             books.forEach(bookEntity -> println(bookEntity.toString()));
         } else {
-            println("Nenhuma BookEntity encontrada!\n");
+            println("Nenhum livro encontrado!\n");
         }
     }
 

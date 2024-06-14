@@ -12,7 +12,9 @@ import static openlibraryhub.Console.scanner;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.ClassDAO;
+import openlibraryhub.database.StudentDAO;
 import openlibraryhub.entities.ClassEntity;
+import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.CRUDScreen;
@@ -119,12 +121,19 @@ public class Classes implements CRUDScreen {
             int id = scanner.nextInt();
             ClassEntity classEntity = ClassDAO.getInstance().getById(id);
 
-            if (classEntity != null) {
-                ClassDAO.getInstance().delete(classEntity);
-                println("");
-            } else {
+            if (classEntity == null) {
                 throw new EntityNotFoundException(ClassEntity.class);
             }
+
+            List<StudentEntity> students = StudentDAO.getInstance().getByClassId(id);
+            if (students != null && !students.isEmpty()) {
+                clean();
+                println("Não é possível excluir uma turma com alunos matriculados!\n");
+                return;
+            }
+
+            ClassDAO.getInstance().delete(classEntity);
+            println("");
         } catch (InputMismatchException | EntityNotFoundException e) {
             Util.handleException(e);
         }
@@ -153,7 +162,7 @@ public class Classes implements CRUDScreen {
         if (!classes.isEmpty()) {
             classes.forEach(classEntity -> println(classEntity.toString()));
         } else {
-            println("Nenhuma ClassEntity encontrada!\n");
+            println("Nenhuma turma encontrada!\n");
         }
     }
 
