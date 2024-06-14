@@ -116,9 +116,9 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
 
             if (rs.next()) {
                 entity = new StudentEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setName(rs.getString("name"));
-                entity.setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
+                entity.setId(rs.getInt("id"))
+                      .setName(rs.getString("name"))
+                      .setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
             }
 
             pstmt.close();
@@ -143,9 +143,9 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
 
             while (rs.next()) {
                 StudentEntity entity = new StudentEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setName(rs.getString("name"));
-                entity.setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
+                entity.setId(rs.getInt("id"))
+                      .setName(rs.getString("name"))
+                      .setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
                 entities.add(entity);
             }
 

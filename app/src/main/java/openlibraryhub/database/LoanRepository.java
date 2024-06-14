@@ -122,11 +122,11 @@ public class LoanRepository implements CRUDRepository<LoanEntity> {
 
             if (rs.next()) {
                 entity = new LoanEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")));
-                entity.setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")));
-                entity.setLoanDate(rs.getDate("loan_date"));
-                entity.setReturnDate(rs.getDate("return_date"));
+                entity.setId(rs.getInt("id"))
+                      .setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")))
+                      .setLoanDate(rs.getDate("loan_date"))
+                      .setReturnDate(rs.getDate("return_date"));
             }
 
             pstmt.close();
@@ -151,11 +151,11 @@ public class LoanRepository implements CRUDRepository<LoanEntity> {
 
             while (rs.next()) {
                 LoanEntity entity = new LoanEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")));
-                entity.setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")));
-                entity.setLoanDate(rs.getDate("loan_date"));
-                entity.setReturnDate(rs.getDate("return_date"));
+                entity.setId(rs.getInt("id"))
+                      .setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")))
+                      .setLoanDate(rs.getDate("loan_date"))
+                      .setReturnDate(rs.getDate("return_date"));
                 entities.add(entity);
             }
 

@@ -26,56 +26,63 @@ public class BookEntity extends Entity {
         return id;
     }
 
-    public void setId(Integer id) {
+    public BookEntity setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public BookEntity setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public BookEntity setAuthor(String author) {
         this.author = author;
+        return this;
     }
 
     public String getSection() {
         return section;
     }
 
-    public void setSection(String section) {
+    public BookEntity setSection(String section) {
         this.section = section;
+        return this;
     }
 
     public Integer getPages() {
         return pages;
     }
 
-    public void setPages(Integer pages) {
+    public BookEntity setPages(Integer pages) {
         this.pages = pages;
+        return this;
     }
 
     public Integer getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public BookEntity setYear(Integer year) {
         this.year = year;
+        return this;
     }
 
     public Integer getStock() {
         return stock;
     }
 
-    public void setStock(Integer stock) {
+    public BookEntity setStock(Integer stock) {
         this.stock = stock;
+        return this;
     }
 
     public String toString() {

@@ -132,13 +132,13 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             if (rs.next()) {
                 entity = new BookEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setTitle(rs.getString("title"));
-                entity.setAuthor(rs.getString("author"));
-                entity.setSection(rs.getString("section"));
-                entity.setPages(rs.getInt("pages"));
-                entity.setYear(rs.getInt("year"));
-                entity.setStock(rs.getInt("stock"));
+                entity.setId(rs.getInt("id"))
+                      .setTitle(rs.getString("title"))
+                      .setAuthor(rs.getString("author"))
+                      .setSection(rs.getString("section"))
+                      .setPages(rs.getInt("pages"))
+                      .setYear(rs.getInt("year"))
+                      .setStock(rs.getInt("stock"));
             }
 
             pstmt.close();
@@ -163,13 +163,13 @@ public class BookRepository implements CRUDRepository<BookEntity> {
 
             while (rs.next()) {
                 BookEntity entity = new BookEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setTitle(rs.getString("title"));
-                entity.setAuthor(rs.getString("author"));
-                entity.setSection(rs.getString("section"));
-                entity.setPages(rs.getInt("pages"));
-                entity.setYear(rs.getInt("year"));
-                entity.setStock(rs.getInt("stock"));
+                entity.setId(rs.getInt("id"))
+                      .setTitle(rs.getString("title"))
+                      .setAuthor(rs.getString("author"))
+                      .setSection(rs.getString("section"))
+                      .setPages(rs.getInt("pages"))
+                      .setYear(rs.getInt("year"))
+                      .setStock(rs.getInt("stock"));
                 entities.add(entity);
             }
 

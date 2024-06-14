@@ -16,24 +16,27 @@ public class StudentEntity extends Entity {
         return id;
     }
 
-    public void setId(Integer id) {
+    public StudentEntity setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public StudentEntity setName(String name) {
         this.name = name;
+        return this;
     }
 
     public ClassEntity getClassEntity() {
         return classEntity;
     }
 
-    public void setClassEntity(ClassEntity classEntity) {
+    public StudentEntity setClassEntity(ClassEntity classEntity) {
         this.classEntity = classEntity;
+        return this;
     }
 
     public String toString() {

@@ -111,8 +111,8 @@ public class ClassRepository implements CRUDRepository<ClassEntity> {
 
             if (rs.next()) {
                 entity = new ClassEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setName(rs.getString("name"));
+                entity.setId(rs.getInt("id"))
+                      .setName(rs.getString("name"));
             }
 
             pstmt.close();
@@ -137,8 +137,8 @@ public class ClassRepository implements CRUDRepository<ClassEntity> {
 
             while (rs.next()) {
                 ClassEntity entity = new ClassEntity();
-                entity.setId(rs.getInt("id"));
-                entity.setName(rs.getString("name"));
+                entity.setId(rs.getInt("id"))
+                      .setName(rs.getString("name"));
                 entities.add(entity);
             }
 

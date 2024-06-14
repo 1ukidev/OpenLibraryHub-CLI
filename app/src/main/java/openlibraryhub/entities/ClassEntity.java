@@ -14,16 +14,18 @@ public class ClassEntity extends Entity {
         return id;
     }
 
-    public void setId(Integer id) {
+    public ClassEntity setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public ClassEntity setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String toString() {

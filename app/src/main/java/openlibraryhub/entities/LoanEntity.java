@@ -22,40 +22,45 @@ public class LoanEntity extends Entity {
         return id;
     }
 
-    public void setId(Integer id) {
+    public LoanEntity setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public BookEntity getBookEntity() {
         return bookEntity;
     }
 
-    public void setBookEntity(BookEntity bookEntity) {
+    public LoanEntity setBookEntity(BookEntity bookEntity) {
         this.bookEntity = bookEntity;
+        return this;
     }
 
     public StudentEntity getStudentEntity() {
         return studentEntity;
     }
 
-    public void setStudentEntity(StudentEntity studentEntity) {
+    public LoanEntity setStudentEntity(StudentEntity studentEntity) {
         this.studentEntity = studentEntity;
+        return this;
     }
 
     public Date getLoanDate() {
         return loanDate;
     }
 
-    public void setLoanDate(Date loanDate) {
+    public LoanEntity setLoanDate(Date loanDate) {
         this.loanDate = loanDate;
+        return this;
     }
 
     public Date getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(Date returnDate) {
+    public LoanEntity setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
+        return this;
     }
 
     public String toString() {
