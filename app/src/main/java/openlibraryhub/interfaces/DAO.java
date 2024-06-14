@@ -2,7 +2,7 @@ package openlibraryhub.interfaces;
 
 import java.util.List;
 
-public interface CRUDRepository<T> {
+public interface DAO<T> {
     /**
      * Saves the given entity to the database.
      * 

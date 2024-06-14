@@ -15,7 +15,7 @@ import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.CRUDScreen;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
-import openlibraryhub.database.BookRepository;
+import openlibraryhub.database.BookDAO;
 
 public class Books implements CRUDScreen {
     public void welcome() {
@@ -92,9 +92,9 @@ public class Books implements CRUDScreen {
             print("Digite a quantidade em estoque: ");
             int stock = scanner.nextInt();
 
-            BookEntity bookEntity = BookRepository.getInstance().save(new BookEntity(title, author,
-                                                                                     section, pages,
-                                                                                     year, stock));
+            BookEntity bookEntity = BookDAO.getInstance().save(new BookEntity(title, author,
+                                                                              section, pages,
+                                                                              year, stock));
 
             if (bookEntity != null && bookEntity.getId() != null) {
                 clean();
@@ -110,7 +110,7 @@ public class Books implements CRUDScreen {
             scanner.nextLine();
             print("Digite o id do livro: ");
             int id = scanner.nextInt();
-            BookEntity bookEntity = BookRepository.getInstance().getById(id);
+            BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
             if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
@@ -150,7 +150,7 @@ public class Books implements CRUDScreen {
             int stock = scanner.nextInt();
             bookEntity.setStock(stock);
 
-            BookEntity updatedBookEntity = BookRepository.getInstance().update(bookEntity);
+            BookEntity updatedBookEntity = BookDAO.getInstance().update(bookEntity);
 
             if (updatedBookEntity != null && updatedBookEntity.getId() != null) {
                 clean();
@@ -167,10 +167,10 @@ public class Books implements CRUDScreen {
         try {
             print("Digite o id do livro: ");
             int id = scanner.nextInt();
-            BookEntity bookEntity = BookRepository.getInstance().getById(id);
+            BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
             if (bookEntity != null) {
-                BookRepository.getInstance().delete(bookEntity);
+                BookDAO.getInstance().delete(bookEntity);
                 println("");
             } else {
                 throw new EntityNotFoundException(BookEntity.class);
@@ -184,7 +184,7 @@ public class Books implements CRUDScreen {
         try {
             print("Digite o id do livro: ");
             int id = scanner.nextInt();
-            BookEntity bookEntity = BookRepository.getInstance().getById(id);
+            BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
             if (bookEntity != null) {
                 clean();
@@ -199,7 +199,7 @@ public class Books implements CRUDScreen {
     }
 
     public void list() {
-        List<BookEntity> books = BookRepository.getInstance().getAll();
+        List<BookEntity> books = BookDAO.getInstance().getAll();
         if (!books.isEmpty()) {
             books.forEach(bookEntity -> println(bookEntity.toString()));
         } else {

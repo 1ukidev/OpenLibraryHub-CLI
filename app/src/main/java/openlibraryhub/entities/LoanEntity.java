@@ -11,7 +11,8 @@ public class LoanEntity extends Entity {
 
     public LoanEntity() {}
 
-    public LoanEntity(BookEntity bookEntity, StudentEntity studentEntity, Date loanDate, Date returnDate) {
+    public LoanEntity(BookEntity bookEntity, StudentEntity studentEntity,
+                      Date loanDate, Date returnDate) {
         this.bookEntity = bookEntity;
         this.studentEntity = studentEntity;
         this.loanDate = loanDate;

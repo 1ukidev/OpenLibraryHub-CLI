@@ -13,27 +13,27 @@ public interface CRUDScreen {
     boolean handleOption();
 
     /**
-     * Saves a new entity to the repository.
+     * Saves a new entity.
      */
     void save();
 
     /**
-     * Updates an existing entity in the repository.
+     * Updates an existing entity.
      */
     void update();
 
     /**
-     * Deletes an existing entity from the repository.
+     * Deletes an existing entity.
      */
     void delete();
 
     /**
-     * Searches for a specific entity in the repository.
+     * Searches for a specific entity.
      */
     void search();
 
     /**
-     * Lists all entities in the repository.
+     * Lists all entities.
      */
     void list();
 }

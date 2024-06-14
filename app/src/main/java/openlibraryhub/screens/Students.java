@@ -11,8 +11,8 @@ import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
-import openlibraryhub.database.ClassRepository;
-import openlibraryhub.database.StudentRepository;
+import openlibraryhub.database.ClassDAO;
+import openlibraryhub.database.StudentDAO;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.EmptyStringException;
@@ -75,12 +75,12 @@ public class Students implements CRUDScreen {
 
             print("Digite o id da turma: ");
             int classId = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
+            ClassEntity classEntity = ClassDAO.getInstance().getById(classId);
             if (classEntity == null) {
                 throw new EntityNotFoundException(ClassEntity.class);
             }
 
-            StudentEntity studentEntity = StudentRepository.getInstance().save(new StudentEntity(name, classEntity));
+            StudentEntity studentEntity = StudentDAO.getInstance().save(new StudentEntity(name, classEntity));
 
             if (studentEntity != null && studentEntity.getId() != null) {
                 clean();
@@ -98,7 +98,7 @@ public class Students implements CRUDScreen {
             scanner.nextLine();
             print("Digite o id do estudante: ");
             int id = scanner.nextInt();
-            StudentEntity studentEntity = StudentRepository.getInstance().getById(id);
+            StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
             if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
@@ -114,13 +114,13 @@ public class Students implements CRUDScreen {
 
             print("Digite o novo id da turma: ");
             int classId = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getInstance().getById(classId);
+            ClassEntity classEntity = ClassDAO.getInstance().getById(classId);
             if (classEntity == null) {
                 throw new EntityNotFoundException(ClassEntity.class);
             }
             studentEntity.setClassEntity(classEntity);
 
-            StudentEntity updatedStudentEntity = StudentRepository.getInstance().update(studentEntity);
+            StudentEntity updatedStudentEntity = StudentDAO.getInstance().update(studentEntity);
 
             if (updatedStudentEntity != null && updatedStudentEntity.getId() != null) {
                 clean();
@@ -138,10 +138,10 @@ public class Students implements CRUDScreen {
             scanner.nextLine();
             print("Digite o id do estudante: ");
             int id = scanner.nextInt();
-            StudentEntity studentEntity = StudentRepository.getInstance().getById(id);
+            StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
             if (studentEntity != null) {
-                StudentRepository.getInstance().delete(studentEntity);
+                StudentDAO.getInstance().delete(studentEntity);
                 println("");
             } else {
                 throw new EntityNotFoundException(StudentEntity.class);
@@ -155,7 +155,7 @@ public class Students implements CRUDScreen {
         try {
             print("Digite o id do estudante: ");
             int id = scanner.nextInt();
-            StudentEntity studentEntity = StudentRepository.getInstance().getById(id);
+            StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
             if (studentEntity != null) {
                 clean();
@@ -170,7 +170,7 @@ public class Students implements CRUDScreen {
     }
 
     public void list() {
-        List<StudentEntity> students = StudentRepository.getInstance().getAll();
+        List<StudentEntity> students = StudentDAO.getInstance().getAll();
         if (!students.isEmpty()) {
             students.forEach(studentEntity -> println(studentEntity.toString()));
         } else {

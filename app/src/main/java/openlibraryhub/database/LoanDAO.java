@@ -14,9 +14,9 @@ import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
-import openlibraryhub.interfaces.CRUDRepository;
+import openlibraryhub.interfaces.DAO;
 
-public class LoanRepository implements CRUDRepository<LoanEntity> {
+public class LoanDAO implements DAO<LoanEntity> {
     public LoanEntity save(LoanEntity entity) {
         try {
             Assert.notNull(entity, "O empréstimo não pode ser nulo!");
@@ -123,8 +123,8 @@ public class LoanRepository implements CRUDRepository<LoanEntity> {
             if (rs.next()) {
                 entity = new LoanEntity();
                 entity.setId(rs.getInt("id"))
-                      .setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")))
-                      .setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")))
+                      .setBookEntity(BookDAO.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentDAO.getInstance().getById(rs.getInt("student_id")))
                       .setLoanDate(rs.getDate("loan_date"))
                       .setReturnDate(rs.getDate("return_date"));
             }
@@ -152,8 +152,8 @@ public class LoanRepository implements CRUDRepository<LoanEntity> {
             while (rs.next()) {
                 LoanEntity entity = new LoanEntity();
                 entity.setId(rs.getInt("id"))
-                      .setBookEntity(BookRepository.getInstance().getById(rs.getInt("book_id")))
-                      .setStudentEntity(StudentRepository.getInstance().getById(rs.getInt("student_id")))
+                      .setBookEntity(BookDAO.getInstance().getById(rs.getInt("book_id")))
+                      .setStudentEntity(StudentDAO.getInstance().getById(rs.getInt("student_id")))
                       .setLoanDate(rs.getDate("loan_date"))
                       .setReturnDate(rs.getDate("return_date"));
                 entities.add(entity);
@@ -168,11 +168,11 @@ public class LoanRepository implements CRUDRepository<LoanEntity> {
         return entities;
     }
 
-    private LoanRepository() {}
+    private LoanDAO() {}
 
-    private static final LoanRepository instance = new LoanRepository();
+    private static final LoanDAO instance = new LoanDAO();
 
-    public static synchronized LoanRepository getInstance() {
+    public static synchronized LoanDAO getInstance() {
         return instance;
     }
 }

@@ -14,9 +14,9 @@ import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
-import openlibraryhub.interfaces.CRUDRepository;
+import openlibraryhub.interfaces.DAO;
 
-public class ClassRepository implements CRUDRepository<ClassEntity> {
+public class ClassDAO implements DAO<ClassEntity> {
     public ClassEntity save(ClassEntity entity) {
         try {
             Assert.notNull(entity, "A turma não pode ser nula!");
@@ -151,11 +151,11 @@ public class ClassRepository implements CRUDRepository<ClassEntity> {
         return entities;
     }
 
-    private ClassRepository() {}
+    private ClassDAO() {}
 
-    private static final ClassRepository instance = new ClassRepository();
+    private static final ClassDAO instance = new ClassDAO();
 
-    public static synchronized ClassRepository getInstance() {
+    public static synchronized ClassDAO getInstance() {
         return instance;
     }
 }

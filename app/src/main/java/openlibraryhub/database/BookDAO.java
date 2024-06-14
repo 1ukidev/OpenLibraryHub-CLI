@@ -14,9 +14,9 @@ import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.BookEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
-import openlibraryhub.interfaces.CRUDRepository;
+import openlibraryhub.interfaces.DAO;
 
-public class BookRepository implements CRUDRepository<BookEntity> {
+public class BookDAO implements DAO<BookEntity> {
     public BookEntity save(BookEntity entity) {
         try {
             Assert.notNull(entity, "O livro não pode ser nulo!");
@@ -182,11 +182,11 @@ public class BookRepository implements CRUDRepository<BookEntity> {
         return entities;
     }
 
-    private BookRepository() {}
+    private BookDAO() {}
 
-    private static final BookRepository instance = new BookRepository();
+    private static final BookDAO instance = new BookDAO();
 
-    public static synchronized BookRepository getInstance() {
+    public static synchronized BookDAO getInstance() {
         return instance;
     }
 }

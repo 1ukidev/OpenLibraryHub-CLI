@@ -11,7 +11,7 @@ import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
-import openlibraryhub.database.ClassRepository;
+import openlibraryhub.database.ClassDAO;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
@@ -71,7 +71,7 @@ public class Classes implements CRUDScreen {
                 throw new EmptyStringException();
             }
 
-            ClassEntity classEntity = ClassRepository.getInstance().save(new ClassEntity(name));
+            ClassEntity classEntity = ClassDAO.getInstance().save(new ClassEntity(name));
 
             if (classEntity != null && classEntity.getId() != null) {
                 clean();
@@ -86,7 +86,7 @@ public class Classes implements CRUDScreen {
         try {
             print("Digite o id da turma: ");
             int id = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getInstance().getById(id);
+            ClassEntity classEntity = ClassDAO.getInstance().getById(id);
 
             if (classEntity == null) {
                 throw new EntityNotFoundException(ClassEntity.class);
@@ -100,7 +100,7 @@ public class Classes implements CRUDScreen {
             }
             classEntity.setName(name);
 
-            ClassEntity updatedClassEntity = ClassRepository.getInstance().update(classEntity);
+            ClassEntity updatedClassEntity = ClassDAO.getInstance().update(classEntity);
 
             if (updatedClassEntity != null && updatedClassEntity.getId() != null) {
                 clean();
@@ -117,10 +117,10 @@ public class Classes implements CRUDScreen {
         try {
             print("Digite o id da turma: ");
             int id = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getInstance().getById(id);
+            ClassEntity classEntity = ClassDAO.getInstance().getById(id);
 
             if (classEntity != null) {
-                ClassRepository.getInstance().delete(classEntity);
+                ClassDAO.getInstance().delete(classEntity);
                 println("");
             } else {
                 throw new EntityNotFoundException(ClassEntity.class);
@@ -134,7 +134,7 @@ public class Classes implements CRUDScreen {
         try {
             print("Digite o id da turma: ");
             int id = scanner.nextInt();
-            ClassEntity classEntity = ClassRepository.getInstance().getById(id);
+            ClassEntity classEntity = ClassDAO.getInstance().getById(id);
 
             if (classEntity != null) {
                 clean();
@@ -149,7 +149,7 @@ public class Classes implements CRUDScreen {
     }
 
     public void list() {
-        List<ClassEntity> classes = ClassRepository.getInstance().getAll();
+        List<ClassEntity> classes = ClassDAO.getInstance().getAll();
         if (!classes.isEmpty()) {
             classes.forEach(classEntity -> println(classEntity.toString()));
         } else {

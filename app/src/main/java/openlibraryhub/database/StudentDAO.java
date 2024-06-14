@@ -14,9 +14,9 @@ import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
-import openlibraryhub.interfaces.CRUDRepository;
+import openlibraryhub.interfaces.DAO;
 
-public class StudentRepository implements CRUDRepository<StudentEntity> {
+public class StudentDAO implements DAO<StudentEntity> {
     public StudentEntity save(StudentEntity entity) {
         try {
             Assert.notNull(entity, "O estudante não pode ser nulo!");
@@ -118,7 +118,7 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
                 entity = new StudentEntity();
                 entity.setId(rs.getInt("id"))
                       .setName(rs.getString("name"))
-                      .setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
+                      .setClassEntity(ClassDAO.getInstance().getById(rs.getInt("class_id")));
             }
 
             pstmt.close();
@@ -145,7 +145,7 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
                 StudentEntity entity = new StudentEntity();
                 entity.setId(rs.getInt("id"))
                       .setName(rs.getString("name"))
-                      .setClassEntity(ClassRepository.getInstance().getById(rs.getInt("class_id")));
+                      .setClassEntity(ClassDAO.getInstance().getById(rs.getInt("class_id")));
                 entities.add(entity);
             }
 
@@ -158,11 +158,11 @@ public class StudentRepository implements CRUDRepository<StudentEntity> {
         return entities;
     }
 
-    private StudentRepository() {}
+    private StudentDAO() {}
 
-    private static final StudentRepository instance = new StudentRepository();
+    private static final StudentDAO instance = new StudentDAO();
 
-    public static synchronized StudentRepository getInstance() {
+    public static synchronized StudentDAO getInstance() {
         return instance;
     }
 }

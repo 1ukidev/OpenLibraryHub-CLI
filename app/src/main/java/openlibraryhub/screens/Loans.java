@@ -13,9 +13,9 @@ import static openlibraryhub.Console.scanner;
 import openlibraryhub.interfaces.CRUDScreen;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
-import openlibraryhub.database.BookRepository;
-import openlibraryhub.database.LoanRepository;
-import openlibraryhub.database.StudentRepository;
+import openlibraryhub.database.BookDAO;
+import openlibraryhub.database.LoanDAO;
+import openlibraryhub.database.StudentDAO;
 import openlibraryhub.entities.BookEntity;
 import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.entities.StudentEntity;
@@ -73,14 +73,14 @@ public class Loans implements CRUDScreen {
             scanner.nextLine();
             print("Digite o id do livro: ");
             int bookId = scanner.nextInt();
-            BookEntity bookEntity = BookRepository.getInstance().getById(bookId);
+            BookEntity bookEntity = BookDAO.getInstance().getById(bookId);
             if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
             }
 
             print("Digite o id do estudante: ");
             int studentId = scanner.nextInt();
-            StudentEntity studentEntity = StudentRepository.getInstance().getById(studentId);
+            StudentEntity studentEntity = StudentDAO.getInstance().getById(studentId);
             if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
             }
@@ -106,8 +106,8 @@ public class Loans implements CRUDScreen {
             }
             Date convertedReturnDate = Util.convertStringToDate(returnDate);
 
-            LoanEntity loanEntity = LoanRepository.getInstance().save(new LoanEntity(bookEntity, studentEntity,
-                                                                                     convertedLoanDate, convertedReturnDate));
+            LoanEntity loanEntity = LoanDAO.getInstance().save(new LoanEntity(bookEntity, studentEntity,
+                                                                              convertedLoanDate, convertedReturnDate));
 
             if (loanEntity != null && loanEntity.getId() != null) {
                 clean();
@@ -126,7 +126,7 @@ public class Loans implements CRUDScreen {
             scanner.nextLine();
             print("Digite o id do empréstimo: ");
             int id = scanner.nextInt();
-            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+            LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity == null) {
                 throw new EntityNotFoundException(LoanEntity.class);
@@ -134,17 +134,19 @@ public class Loans implements CRUDScreen {
 
             print("Digite o id do livro: ");
             int bookId = scanner.nextInt();
-            BookEntity bookEntity = BookRepository.getInstance().getById(bookId);
+            BookEntity bookEntity = BookDAO.getInstance().getById(bookId);
             if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
             }
+            loanEntity.setBookEntity(bookEntity);
 
             print("Digite o id do estudante: ");
             int studentId = scanner.nextInt();
-            StudentEntity studentEntity = StudentRepository.getInstance().getById(studentId);
+            StudentEntity studentEntity = StudentDAO.getInstance().getById(studentId);
             if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
             }
+            loanEntity.setStudentEntity(studentEntity);
 
             scanner.nextLine();
             print("Digite a data de empréstimo (dd/mm/aaaa): ");
@@ -156,6 +158,7 @@ public class Loans implements CRUDScreen {
                 throw new IllegalDateException("Data inválida!");
             }
             Date convertedLoanDate = Util.convertStringToDate(loanDate);
+            loanEntity.setLoanDate(convertedLoanDate);
 
             print("Digite a data de devolução (dd/mm/aaaa): ");
             String returnDate = scanner.nextLine();
@@ -166,13 +169,9 @@ public class Loans implements CRUDScreen {
                 throw new IllegalDateException("Data inválida!");
             }
             Date convertedReturnDate = Util.convertStringToDate(returnDate);
-
-            loanEntity.setBookEntity(bookEntity);
-            loanEntity.setStudentEntity(studentEntity);
-            loanEntity.setLoanDate(convertedLoanDate);
             loanEntity.setReturnDate(convertedReturnDate);
 
-            LoanEntity updatedLoanEntity = LoanRepository.getInstance().update(loanEntity);
+            LoanEntity updatedLoanEntity = LoanDAO.getInstance().update(loanEntity);
 
             if (updatedLoanEntity != null && updatedLoanEntity.getId() != null) {
                 clean();
@@ -190,10 +189,10 @@ public class Loans implements CRUDScreen {
         try {
             print("Digite o id do empréstimo: ");
             int id = scanner.nextInt();
-            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+            LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity != null) {
-                LoanRepository.getInstance().delete(loanEntity);
+                LoanDAO.getInstance().delete(loanEntity);
                 println("");
             } else {
                 throw new EntityNotFoundException(LoanEntity.class);
@@ -207,7 +206,7 @@ public class Loans implements CRUDScreen {
         try {
             print("Digite o id do empréstimo: ");
             int id = scanner.nextInt();
-            LoanEntity loanEntity = LoanRepository.getInstance().getById(id);
+            LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity != null) {
                 clean();
@@ -222,7 +221,7 @@ public class Loans implements CRUDScreen {
     }
 
     public void list() {
-        List<LoanEntity> loans = LoanRepository.getInstance().getAll();
+        List<LoanEntity> loans = LoanDAO.getInstance().getAll();
         if (!loans.isEmpty()) {
             loans.forEach(loanEntity -> println(loanEntity.toString()));
         } else {
