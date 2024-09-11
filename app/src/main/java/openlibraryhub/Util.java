@@ -1,17 +1,11 @@
 package openlibraryhub;
 
-import static java.lang.System.exit;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.regex.Pattern;
-
-import static openlibraryhub.Console.clean;
-import static openlibraryhub.Console.println;
-import static openlibraryhub.Console.scanner;
 
 import openlibraryhub.exceptions.EmptyStringException;
 import openlibraryhub.exceptions.EntityNotFoundException;
@@ -30,27 +24,26 @@ public class Util {
     }
 
     public static void checkSystem() {
-        if (Constants.DB_URL == null || Constants.DB_USER == null
-                || Constants.DB_PASSWORD == null || Constants.DB_SCHEMA == null) {
-            println(Errors.INVALID_DB_MESSAGE);
-            exit(1);
+        if (Constants.DB_URL == null || Constants.DB_USER == null || Constants.DB_PASSWORD == null) {
+            Console.println(Errors.INVALID_DB_MESSAGE);
+            System.exit(1);
         }
     }
 
     public static void handleException(Exception e) {
-        clean();
+        Console.clear();
 
         if (e instanceof InputMismatchException) {
-            println(Errors.INVALID_INPUT_MESSAGE);
-            scanner.next();
+            Console.println(Errors.INVALID_INPUT_MESSAGE);
+            Console.read();
         } else if (e instanceof EmptyStringException) {
-            println(Errors.EMPTY_INPUT_MESSAGE);
+            Console.println(Errors.EMPTY_INPUT_MESSAGE);
         } else if (e instanceof EntityNotFoundException || e instanceof IllegalDateException) {
-            println(e.getMessage() + "\n");
+            Console.println(e.getMessage() + "\n");
         } else {
-            println(Errors.UNEXPECTED_ERROR_MESSAGE);
+            Console.println(Errors.UNEXPECTED_ERROR_MESSAGE);
             e.printStackTrace();
-            println("");
+            Console.println("");
         }
     }
 

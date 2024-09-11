@@ -5,12 +5,8 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 
-import static openlibraryhub.Console.clean;
-import static openlibraryhub.Console.print;
-import static openlibraryhub.Console.println;
-import static openlibraryhub.Console.scanner;
-
 import openlibraryhub.interfaces.CRUDScreen;
+import openlibraryhub.Console;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.BookDAO;
@@ -27,13 +23,13 @@ public class Loans implements CRUDScreen {
     public void welcome() {
         boolean running = true;
         while (running) {
-            println("1 - Cadastrar empréstimo");
-            println("2 - Atualizar empréstimo");
-            println("3 - Excluir empréstimo");
-            println("4 - Buscar empréstimo");
-            println("5 - Listar empréstimos");
-            println("6 - Voltar");
-            print("--> ");
+            Console.println("1 - Cadastrar empréstimo");
+            Console.println("2 - Atualizar empréstimo");
+            Console.println("3 - Excluir empréstimo");
+            Console.println("4 - Buscar empréstimo");
+            Console.println("5 - Listar empréstimos");
+            Console.println("6 - Voltar");
+            Console.print("--> ");
 
             running = handleOption();
         }
@@ -45,13 +41,13 @@ public class Loans implements CRUDScreen {
         3, this::delete,
         4, this::search,
         5, this::list,
-        6, () -> println("Voltando ao menu principal...\n")
+        6, () -> Console.println("Voltando ao menu principal...\n")
     );
 
     public boolean handleOption() {
         try {
-            int opcao = scanner.nextInt();
-            clean();
+            int opcao = Console.readInt();
+            Console.clear();
             Runnable action = options.get(opcao);
 
             if (action != null) {
@@ -60,7 +56,7 @@ public class Loans implements CRUDScreen {
                     return false;
                 }
             } else {
-                println(Errors.INVALID_OPTION_MESSAGE);
+                Console.println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);
@@ -70,24 +66,22 @@ public class Loans implements CRUDScreen {
 
     public void save() {
         try {
-            scanner.nextLine();
-            print("Digite o id do livro: ");
-            int bookId = scanner.nextInt();
+            Console.print("Digite o id do livro: ");
+            int bookId = Console.readInt();
             BookEntity bookEntity = BookDAO.getInstance().getById(bookId);
             if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
             }
 
-            print("Digite o id do estudante: ");
-            int studentId = scanner.nextInt();
+            Console.print("Digite o id do estudante: ");
+            int studentId = Console.readInt();
             StudentEntity studentEntity = StudentDAO.getInstance().getById(studentId);
             if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
             }
 
-            scanner.nextLine();
-            print("Digite a data de empréstimo (dd/mm/aaaa): ");
-            String loanDate = scanner.nextLine();
+            Console.print("Digite a data de empréstimo (dd/mm/aaaa): ");
+            String loanDate = Console.read();
             if (loanDate == null || loanDate.isEmpty()) {
                 throw new EmptyStringException();
             }
@@ -96,8 +90,8 @@ public class Loans implements CRUDScreen {
             }
             Date convertedLoanDate = Util.convertStringToDate(loanDate);
 
-            print("Digite a data de devolução (dd/mm/aaaa): ");
-            String returnDate = scanner.nextLine();
+            Console.print("Digite a data de devolução (dd/mm/aaaa): ");
+            String returnDate = Console.read();
             if (returnDate == null || returnDate.isEmpty()) {
                 throw new EmptyStringException();
             }
@@ -106,12 +100,12 @@ public class Loans implements CRUDScreen {
             }
             Date convertedReturnDate = Util.convertStringToDate(returnDate);
 
-            LoanEntity loanEntity = LoanDAO.getInstance().save(new LoanEntity(bookEntity, studentEntity,
-                                                                              convertedLoanDate, convertedReturnDate));
+            LoanEntity temp = new LoanEntity(bookEntity, studentEntity, convertedLoanDate, convertedReturnDate);
+            LoanEntity loanEntity = LoanDAO.getInstance().save(temp);
 
             if (loanEntity != null && loanEntity.getId() != null) {
-                clean();
-                println("Empréstimo cadastrado com sucesso!\n");
+                Console.clear();
+                Console.println("Empréstimo cadastrado com sucesso!\n");
             }
         } catch (InputMismatchException
                 | EntityNotFoundException
@@ -123,34 +117,32 @@ public class Loans implements CRUDScreen {
 
     public void update() {
         try {
-            scanner.nextLine();
-            print("Digite o id do empréstimo: ");
-            int id = scanner.nextInt();
+            Console.print("Digite o id do empréstimo: ");
+            int id = Console.readInt();
             LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity == null) {
                 throw new EntityNotFoundException(LoanEntity.class);
             }
 
-            print("Digite o id do livro: ");
-            int bookId = scanner.nextInt();
+            Console.print("Digite o id do livro: ");
+            int bookId = Console.readInt();
             BookEntity bookEntity = BookDAO.getInstance().getById(bookId);
             if (bookEntity == null) {
                 throw new EntityNotFoundException(BookEntity.class);
             }
             loanEntity.setBookEntity(bookEntity);
 
-            print("Digite o id do estudante: ");
-            int studentId = scanner.nextInt();
+            Console.print("Digite o id do estudante: ");
+            int studentId = Console.readInt();
             StudentEntity studentEntity = StudentDAO.getInstance().getById(studentId);
             if (studentEntity == null) {
                 throw new EntityNotFoundException(StudentEntity.class);
             }
             loanEntity.setStudentEntity(studentEntity);
 
-            scanner.nextLine();
-            print("Digite a data de empréstimo (dd/mm/aaaa): ");
-            String loanDate = scanner.nextLine();
+            Console.print("Digite a data de empréstimo (dd/mm/aaaa): ");
+            String loanDate = Console.read();
             if (loanDate == null || loanDate.isEmpty()) {
                 throw new EmptyStringException();
             }
@@ -160,8 +152,8 @@ public class Loans implements CRUDScreen {
             Date convertedLoanDate = Util.convertStringToDate(loanDate);
             loanEntity.setLoanDate(convertedLoanDate);
 
-            print("Digite a data de devolução (dd/mm/aaaa): ");
-            String returnDate = scanner.nextLine();
+            Console.print("Digite a data de devolução (dd/mm/aaaa): ");
+            String returnDate = Console.read();
             if (returnDate == null || returnDate.isEmpty()) {
                 throw new EmptyStringException();
             }
@@ -174,8 +166,8 @@ public class Loans implements CRUDScreen {
             LoanEntity updatedLoanEntity = LoanDAO.getInstance().update(loanEntity);
 
             if (updatedLoanEntity != null && updatedLoanEntity.getId() != null) {
-                clean();
-                println("Empréstimo atualizado com sucesso!\n");
+                Console.clear();
+                Console.println("Empréstimo atualizado com sucesso!\n");
             }
         } catch (InputMismatchException
                 | EntityNotFoundException
@@ -187,13 +179,13 @@ public class Loans implements CRUDScreen {
 
     public void delete() {
         try {
-            print("Digite o id do empréstimo: ");
-            int id = scanner.nextInt();
+            Console.print("Digite o id do empréstimo: ");
+            int id = Console.readInt();
             LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity != null) {
                 LoanDAO.getInstance().delete(loanEntity);
-                println("");
+                Console.println("");
             } else {
                 throw new EntityNotFoundException(LoanEntity.class);
             }
@@ -204,14 +196,14 @@ public class Loans implements CRUDScreen {
 
     public void search() {
         try {
-            print("Digite o id do empréstimo: ");
-            int id = scanner.nextInt();
+            Console.print("Digite o id do empréstimo: ");
+            int id = Console.readInt();
             LoanEntity loanEntity = LoanDAO.getInstance().getById(id);
 
             if (loanEntity != null) {
-                clean();
-                println("Empréstimo encontrado!\n");
-                println(loanEntity.toString());
+                Console.clear();
+                Console.println("Empréstimo encontrado!\n");
+                Console.println(loanEntity);
             } else {
                 throw new EntityNotFoundException(LoanEntity.class);
             }
@@ -223,9 +215,9 @@ public class Loans implements CRUDScreen {
     public void list() {
         List<LoanEntity> loans = LoanDAO.getInstance().getAll();
         if (!loans.isEmpty()) {
-            loans.forEach(loanEntity -> println(loanEntity.toString()));
+            loans.forEach(loanEntity -> Console.println(loanEntity));
         } else {
-            println("Nenhum empréstimo encontrado!\n");
+            Console.println("Nenhum empréstimo encontrado!\n");
         }
     }
 

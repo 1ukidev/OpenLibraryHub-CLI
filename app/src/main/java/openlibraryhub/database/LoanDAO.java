@@ -9,24 +9,33 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import openlibraryhub.Assert;
-import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.DAO;
 
-public class LoanDAO implements DAO<LoanEntity> {
+public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
+    private static final String NULL_LOAN = "Empréstimo inválido!";
+    private static final String NULL_ID = "Id inválido!";
+    private static final String NULL_BOOK = "Livro inválido!";
+    private static final String NULL_STUDENT = "Estudante inválido!";
+    private static final String NULL_LOAN_DATE = "Data de empréstimo inválida!";
+    private static final String NULL_RETURN_DATE = "Data de devolução inválida!";
+
     public LoanEntity save(LoanEntity entity) {
         try {
-            Assert.notNull(entity, "O empréstimo não pode ser nulo!");
-            Assert.notNull(entity.getBookEntity(), "Livro inválido!");
-            Assert.notNull(entity.getStudentEntity(), "Estudante inválido!");
-            Assert.notNull(entity.getLoanDate(), "Data de empréstimo inválida!");
-            Assert.notNull(entity.getReturnDate(), "Data de devolução inválida!");
+            Assert.check(entity != null, NULL_LOAN);
+            Assert.check(entity.getBookEntity() != null, NULL_BOOK);
+            Assert.check(entity.getStudentEntity() != null, NULL_STUDENT);
+            Assert.check(entity.getLoanDate() != null, NULL_LOAN_DATE);
+            Assert.check(entity.getReturnDate() != null, NULL_RETURN_DATE);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "INSERT INTO loans (book_id, student_id, loan_date, return_date) VALUES (?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -54,15 +63,14 @@ public class LoanDAO implements DAO<LoanEntity> {
 
     public LoanEntity update(LoanEntity entity) {
         try {
-            Assert.notNull(entity, "O empréstimo não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
-            Assert.notNull(entity.getBookEntity(), "Livro inválido!");
-            Assert.notNull(entity.getStudentEntity(), "Estudante inválido!");
-            Assert.notNull(entity.getLoanDate(), "Data de empréstimo inválida!");
-            Assert.notNull(entity.getReturnDate(), "Data de devolução inválida!");
+            Assert.check(entity != null, NULL_LOAN);
+            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity.getBookEntity() != null, NULL_BOOK);
+            Assert.check(entity.getStudentEntity() != null, NULL_STUDENT);
+            Assert.check(entity.getLoanDate() != null, NULL_LOAN_DATE);
+            Assert.check(entity.getReturnDate() != null, NULL_RETURN_DATE);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "UPDATE loans SET book_id = ?, student_id = ?, loan_date = ?, return_date = ? WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -80,16 +88,16 @@ public class LoanDAO implements DAO<LoanEntity> {
         } catch (SQLException | IllegalObjectException e) {
             Util.handleException(e);
         }
+
         return entity;
     }
 
     public void delete(LoanEntity entity) {
         try {
-            Assert.notNull(entity, "O empréstimo não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.check(entity != null, NULL_LOAN);
+            Assert.check(entity.getId() != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "DELETE FROM loans WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -104,14 +112,13 @@ public class LoanDAO implements DAO<LoanEntity> {
         }
     }
 
-    public LoanEntity getById(int id) {
+    public LoanEntity getById(Integer id) {
         LoanEntity entity = null;
 
         try {
-            Assert.notNull(id, "ID inválido!");
+            Assert.check(id != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM loans WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -142,8 +149,7 @@ public class LoanDAO implements DAO<LoanEntity> {
         List<LoanEntity> entities = new ArrayList<>();
 
         try {
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM loans";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -168,14 +174,13 @@ public class LoanDAO implements DAO<LoanEntity> {
         return entities;
     }
 
-    public LoanEntity getByStudentId(int studentId) {
+    public LoanEntity getByStudentId(Integer studentId) {
         LoanEntity entity = null;
 
         try {
-            Assert.notNull(studentId, "ID do estudante inválido!");
+            Assert.check(studentId != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM loans WHERE student_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -202,14 +207,13 @@ public class LoanDAO implements DAO<LoanEntity> {
         return entity;
     }
 
-    public LoanEntity getByBookId(int bookId) {
+    public LoanEntity getByBookId(Integer bookId) {
         LoanEntity entity = null;
 
         try {
-            Assert.notNull(bookId, "ID do livro inválido!");
+            Assert.check(bookId != null, NULL_BOOK);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM loans WHERE book_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);

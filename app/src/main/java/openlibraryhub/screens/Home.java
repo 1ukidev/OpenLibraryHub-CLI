@@ -1,16 +1,9 @@
 package openlibraryhub.screens;
 
-import static java.lang.System.exit;
-
 import java.util.InputMismatchException;
 import java.util.Map;
 
-import static openlibraryhub.Console.clean;
-import static openlibraryhub.Console.print;
-import static openlibraryhub.Console.println;
-import static openlibraryhub.Console.scanner;
-import static openlibraryhub.Util.greet;
-
+import openlibraryhub.Console;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.interfaces.Screen;
@@ -19,16 +12,16 @@ public class Home implements Screen {
     public void welcome() {
         boolean running = true;
         while (running) {
-            println("Bem-vindo ao OpenLibraryHub!\n");
-            println(greet() + "\n");
-            println("O que deseja fazer?");
-            println("1 - Livros");
-            println("2 - Turmas");
-            println("3 - Alunos");
-            println("4 - Empréstimo");
-            println("5 - Outros");
-            println("6 - Sair");
-            print("--> ");
+            Console.println("Bem-vindo ao OpenLibraryHub!\n");
+            Console.println(Util.greet() + "\n");
+            Console.println("O que deseja fazer?");
+            Console.println("1 - Livros");
+            Console.println("2 - Turmas");
+            Console.println("3 - Alunos");
+            Console.println("4 - Empréstimo");
+            Console.println("5 - Outros");
+            Console.println("6 - Sair");
+            Console.print("--> ");
 
             running = handleOption();
         }
@@ -41,21 +34,21 @@ public class Home implements Screen {
         4, () -> Loans.getInstance().welcome(),
         5, () -> Others.getInstance().welcome(),
         6, () -> {
-            println("Até mais!");
-            exit(0);
+            Console.println("Até mais!");
+            System.exit(0);
         }
     );
 
     public boolean handleOption() {
         try {
-            int opcao = scanner.nextInt();
-            clean();
+            int opcao = Console.readInt();
+            Console.clear();
             Runnable action = options.get(opcao);
 
             if (action != null) {
                 action.run();
             } else {
-                println(Errors.INVALID_OPTION_MESSAGE);
+                Console.println(Errors.INVALID_OPTION_MESSAGE);
             }
         } catch (InputMismatchException e) {
             Util.handleException(e);

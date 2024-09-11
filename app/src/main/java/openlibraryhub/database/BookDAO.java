@@ -9,26 +9,37 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import openlibraryhub.Assert;
-import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.BookEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.DAO;
 
-public class BookDAO implements DAO<BookEntity> {
+public class BookDAO implements DAO<BookEntity>, IBookDAO {
+    private static final String NULL_BOOK = "Livro inválido!";
+    private static final String NULL_ID = "Id inválido!";
+    private static final String NULL_TITLE = "Título inválido!";
+    private static final String NULL_AUTHOR = "Autor inválido!";
+    private static final String NULL_SECTION = "Seção inválida!";
+    private static final String NULL_PAGES = "Quantidade de páginas inválidas!";
+    private static final String NULL_YEAR = "Ano inválido!";
+    private static final String NULL_STOCK = "Quantidade em estoque inválido!";
+
     public BookEntity save(BookEntity entity) {
         try {
-            Assert.notNull(entity, "O livro não pode ser nulo!");
-            Assert.notEmpty(entity.getTitle(), "Título inválido!");
-            Assert.notEmpty(entity.getAuthor(), "Autor inválido!");
-            Assert.notEmpty(entity.getSection(), "Seção inválida!");
-            Assert.notNull(entity.getPages(), "Quantidade de páginas inválidas!");
-            Assert.notNull(entity.getYear(), "Ano inválido!");
-            Assert.notNull(entity.getStock(), "Quantidade em estoque inválido!");
+            Assert.check(entity != null, NULL_BOOK);
+            Assert.check(entity.getTitle() != null, NULL_TITLE);
+            Assert.check(entity.getAuthor() != null, NULL_AUTHOR);
+            Assert.check(entity.getSection() != null, NULL_SECTION);
+            Assert.check(entity.getPages() != null, NULL_PAGES);
+            Assert.check(entity.getYear() != null, NULL_YEAR);
+            Assert.check(entity.getStock() != null, NULL_STOCK);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "INSERT INTO books (title, author, section, pages, year, stock) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -58,17 +69,16 @@ public class BookDAO implements DAO<BookEntity> {
 
     public BookEntity update(BookEntity entity) {
         try {
-            Assert.notNull(entity, "O livro não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
-            Assert.notEmpty(entity.getTitle(), "Título inválido!");
-            Assert.notEmpty(entity.getAuthor(), "Autor inválido!");
-            Assert.notEmpty(entity.getSection(), "Seção inválida!");
-            Assert.notNull(entity.getPages(), "Quantidade de páginas inválidas!");
-            Assert.notNull(entity.getYear(), "Ano inválido!");
-            Assert.notNull(entity.getStock(), "Quantidade em estoque inválido!");
+            Assert.check(entity != null, NULL_BOOK);
+            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity.getTitle() != null, NULL_TITLE);
+            Assert.check(entity.getAuthor() != null, NULL_AUTHOR);
+            Assert.check(entity.getSection() != null, NULL_SECTION);
+            Assert.check(entity.getPages() != null, NULL_PAGES);
+            Assert.check(entity.getYear() != null, NULL_YEAR);
+            Assert.check(entity.getStock() != null, NULL_STOCK);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "UPDATE books SET title = ?, author = ?, section = ?, pages = ?, year = ?, stock = ? WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -94,11 +104,10 @@ public class BookDAO implements DAO<BookEntity> {
 
     public void delete(BookEntity entity) {
         try {
-            Assert.notNull(entity, "O livro não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.check(entity != null, NULL_BOOK);
+            Assert.check(entity.getId() != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "DELETE FROM books WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -114,20 +123,19 @@ public class BookDAO implements DAO<BookEntity> {
         }
     }
 
-    public BookEntity getById(int id) {
+    public BookEntity getById(Integer id) {
         BookEntity entity = null;    
 
         try {
-            Assert.notNull(id, "ID inválido!");
+            Assert.check(id != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM books WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             int i = 0;
-            pstmt.setInt(++i, id);
+            pstmt.setInt(++i, id.intValue());
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -154,8 +162,7 @@ public class BookDAO implements DAO<BookEntity> {
         List<BookEntity> entities = new ArrayList<>();
 
         try {
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM books";
             Statement stmt = conn.createStatement();

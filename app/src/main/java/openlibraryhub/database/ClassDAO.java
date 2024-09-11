@@ -9,21 +9,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import openlibraryhub.Assert;
-import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.DAO;
 
 public class ClassDAO implements DAO<ClassEntity> {
+    private static final String NULL_CLASS = "Turma inválida!";
+    private static final String NULL_ID = "Id inválido!";
+    private static final String NULL_NAME = "Nome inválido!";
+
     public ClassEntity save(ClassEntity entity) {
         try {
-            Assert.notNull(entity, "A turma não pode ser nula!");
-            Assert.notEmpty(entity.getName(), "Nome inválido!");
+            Assert.check(entity != null, NULL_CLASS);
+            Assert.check(entity.getName() != null, NULL_NAME);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "INSERT INTO classes (name) VALUES (?)";
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -48,11 +54,10 @@ public class ClassDAO implements DAO<ClassEntity> {
 
     public ClassEntity update(ClassEntity entity) {
         try {
-            Assert.notNull(entity, "A turma não pode ser nula!");
-            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.check(entity != null, NULL_CLASS);
+            Assert.check(entity.getId() != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "UPDATE classes SET name = ? WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -73,11 +78,10 @@ public class ClassDAO implements DAO<ClassEntity> {
 
     public void delete(ClassEntity entity) {
         try {
-            Assert.notNull(entity, "A turma não pode ser nula!");
-            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.check(entity != null, NULL_CLASS);
+            Assert.check(entity.getId() != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "DELETE FROM classes WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -93,20 +97,19 @@ public class ClassDAO implements DAO<ClassEntity> {
         }
     }
 
-    public ClassEntity getById(int id) {
+    public ClassEntity getById(Integer id) {
         ClassEntity entity = null;
 
         try {
-            Assert.notNull(id, "ID inválido!");
+            Assert.check(id != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM classes WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             int i = 0;
-            pstmt.setInt(++i, id);
+            pstmt.setInt(++i, id.intValue());
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -128,8 +131,7 @@ public class ClassDAO implements DAO<ClassEntity> {
         List<ClassEntity> entities = new ArrayList<>();
 
         try {
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM classes";
             Statement stmt = conn.createStatement();

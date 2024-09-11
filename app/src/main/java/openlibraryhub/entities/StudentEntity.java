@@ -43,8 +43,9 @@ public class StudentEntity extends Entity {
     }
 
     public String toString() {
-        return "ID: " + id + "\n" +
-               "Nome: " + name + "\n" +
-               "Turma: " + classEntity.getName() + "\n";
+        String id = getId() != null ? getId().toString() : "N/A";
+        String name = getName() != null ? getName() : "N/A";
+        String className = getClassEntity() != null ? getClassEntity().getName() : "N/A";
+        return String.format("Id: %s\nNome: %s\nTurma: %s\n", id, name, className);
     }
 }

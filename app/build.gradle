@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.mysql:mysql-connector-j:8.4.0'
+    implementation 'com.mysql:mysql-connector-j:9.0.0'
 }
 
 application {

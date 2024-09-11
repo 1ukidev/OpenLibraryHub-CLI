@@ -68,10 +68,13 @@ public class LoanEntity extends Entity {
     }
 
     public String toString() {
-        return "ID: " + id + "\n" +
-               "Livro: " + bookEntity.getTitle() + "\n" +
-               "Estudante: " + studentEntity.getName() + "\n" +
-               "Data de empréstimo: " + loanDate + "\n" +
-               "Data de devolução: " + returnDate + "\n";
+        String id = getId() != null ? getId().toString() : "N/A";
+        String bookTitle = getBookEntity() != null ? getBookEntity().getTitle() : "N/A";
+        String studentName = getStudentEntity() != null ? getStudentEntity().getName() : "N/A";
+        String loanDate = getLoanDate() != null ? getLoanDate().toString() : "N/A";
+        String returnDate = getReturnDate() != null ? getReturnDate().toString() : "N/A";
+        return String.format(
+            "Id: %s\nLivro: %s\nEstudante: %s\nData de empréstimo: %s\nData de devolução: %s\n",
+            id, bookTitle, studentName, loanDate, returnDate);
     }
 }

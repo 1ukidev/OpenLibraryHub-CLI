@@ -89,12 +89,15 @@ public class BookEntity extends Entity {
     }
 
     public String toString() {
-        return "ID: " + id + "\n" +
-               "Título: " + title + "\n" +
-               "Autor: " + author + "\n" +
-               "Seção: " + section + "\n" +
-               "Páginas: " + pages + "\n" +
-               "Ano: " + year + "\n" +
-               "Estoque: " + stock + "\n";
+        String id = this.id != null ? this.id.toString() : "N/A";
+        String title = this.title != null ? this.title : "N/A";
+        String author = this.author != null ? this.author : "N/A";
+        String section = this.section != null ? this.section : "N/A";
+        String pages = this.pages != null ? this.pages.toString() : "N/A";
+        String year = this.year != null ? this.year.toString() : "N/A";
+        String stock = this.stock != null ? this.stock.toString() : "N/A";
+        return String.format(
+            "Id: %s\nTítulo: %s\nAutor: %s\nSeção: %s\nPáginas: %s\nAno: %s\nEstoque: %s\n",
+            id, title, author, section, pages, year, stock);
     }
 }

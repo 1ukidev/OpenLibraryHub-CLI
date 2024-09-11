@@ -32,7 +32,7 @@ public interface DAO<T> {
      * @param id the id of the entity to be retrieved
      * @return the entity with the specified id, or null if not found
      */
-    T getById(int id);
+    T getById(Integer id);
 
     /**
      * Retrieves all entities from the database.

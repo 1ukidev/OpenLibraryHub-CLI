@@ -32,7 +32,8 @@ public class ClassEntity extends Entity {
     }
 
     public String toString() {
-        return "ID: " + id + "\n" +
-               "Nome: " + name + "\n";
+        String id = getId() != null ? getId().toString() : "N/A";
+        String name = getName() != null ? getName() : "N/A";
+        return String.format("Id: %s\nNome: %s\n", id, name);
     }
 }

@@ -9,22 +9,29 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import openlibraryhub.Assert;
-import openlibraryhub.Constants;
 import openlibraryhub.Util;
 import openlibraryhub.entities.StudentEntity;
 import openlibraryhub.exceptions.IllegalObjectException;
 import openlibraryhub.interfaces.DAO;
 
-public class StudentDAO implements DAO<StudentEntity> {
+public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
+    private static final String NULL_STUDENT = "Estudante inválido!";
+    private static final String NULL_ID = "Id inválido!";
+    private static final String NULL_NAME = "Nome inválido!";
+    private static final String NULL_CLASS = "Turma inválida!";
+
     public StudentEntity save(StudentEntity entity) {
         try {
-            Assert.notNull(entity, "O estudante não pode ser nulo!");
-            Assert.notEmpty(entity.getName(), "Nome inválido!");
-            Assert.notNull(entity.getClassEntity(), "Turma inválida!");
+            Assert.check(entity != null, NULL_STUDENT);
+            Assert.check(entity.getName() != null, NULL_NAME);
+            Assert.check(entity.getClassEntity() != null, NULL_CLASS);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "INSERT INTO students (name, class_id) VALUES (?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -50,13 +57,12 @@ public class StudentDAO implements DAO<StudentEntity> {
 
     public StudentEntity update(StudentEntity entity) {
         try {
-            Assert.notNull(entity, "O estudante não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
-            Assert.notEmpty(entity.getName(), "Nome inválido!");
-            Assert.notNull(entity.getClassEntity(), "Turma inválida!");
+            Assert.check(entity != null, NULL_STUDENT);
+            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity.getName() != null, NULL_NAME);
+            Assert.check(entity.getClassEntity() != null, NULL_CLASS);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "UPDATE students SET name = ?, class_id = ? WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -78,11 +84,10 @@ public class StudentDAO implements DAO<StudentEntity> {
 
     public void delete(StudentEntity entity) {
         try {
-            Assert.notNull(entity, "O estudante não pode ser nulo!");
-            Assert.notNull(entity.getId(), "ID inválido!");
+            Assert.check(entity != null, NULL_STUDENT);
+            Assert.check(entity.getId() != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "DELETE FROM students WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -98,20 +103,18 @@ public class StudentDAO implements DAO<StudentEntity> {
         }
     }
 
-    public StudentEntity getById(int id) {
+    public StudentEntity getById(Integer id) {
         StudentEntity entity = null;
 
         try {
-            Assert.notNull(id, "ID inválido!");
+            Assert.check(id != null, "ID inválido!");
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM students WHERE id = ?"; 
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            int i = 0;
-            pstmt.setInt(++i, id);
+            pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -134,8 +137,7 @@ public class StudentDAO implements DAO<StudentEntity> {
         List<StudentEntity> entities = new ArrayList<>();
 
         try {
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM students";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -158,14 +160,13 @@ public class StudentDAO implements DAO<StudentEntity> {
         return entities;
     }
 
-    public List<StudentEntity> getByClassId(int classId) {
+    public List<StudentEntity> getByClassId(Integer classId) {
         List<StudentEntity> entities = new ArrayList<>();
 
         try {
-            Assert.notNull(classId, "ID inválido!");
+            Assert.check(classId != null, NULL_ID);
 
-            Connection conn = DriverManager.getConnection(Constants.DB_URL + "/" + Constants.DB_SCHEMA,
-                                                          Constants.DB_USER, Constants.DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             String sql = "SELECT * FROM students WHERE class_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
