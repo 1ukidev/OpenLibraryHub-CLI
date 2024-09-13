@@ -1,6 +1,10 @@
 package openlibraryhub;
 
+import java.util.Date;
 import java.util.Scanner;
+
+import openlibraryhub.exceptions.EmptyStringException;
+import openlibraryhub.exceptions.IllegalDateException;
 
 public class Console {
     private static Scanner scanner = new Scanner(System.in);
@@ -19,12 +23,34 @@ public class Console {
     }
 
     public static String read() {
-        return scanner.nextLine();
+        String result = scanner.nextLine();
+        if (result == null || result.isEmpty()) {
+            throw new EmptyStringException();
+        }
+        return result;
     }
 
     public static int readInt() {
         int result = scanner.nextInt();
         scanner.nextLine();
         return result;
+    }
+
+    public static Date readDate() {
+        String result = scanner.nextLine();
+
+        if (result == null || result.isEmpty()) {
+            throw new EmptyStringException();
+        }
+        if (!Util.isDate(result)) {
+            throw new IllegalDateException();
+        }
+
+        Date date = Util.convertStringToDate(result);
+        if (date == null) {
+            throw new IllegalDateException();
+        }
+
+        return date;
     }
 }

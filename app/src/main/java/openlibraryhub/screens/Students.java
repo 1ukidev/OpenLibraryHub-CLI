@@ -13,8 +13,6 @@ import openlibraryhub.database.StudentDAO;
 import openlibraryhub.entities.ClassEntity;
 import openlibraryhub.entities.LoanEntity;
 import openlibraryhub.entities.StudentEntity;
-import openlibraryhub.exceptions.EmptyStringException;
-import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.CRUDScreen;
 
 public class Students implements CRUDScreen {
@@ -66,16 +64,10 @@ public class Students implements CRUDScreen {
         try {
             Console.print("Digite o nome do estudante: ");
             String name = Console.read();
-            if (name == null || name.isEmpty()) {
-                throw new EmptyStringException();
-            }
 
             Console.print("Digite o id da turma: ");
             int classId = Console.readInt();
             ClassEntity classEntity = ClassDAO.getInstance().getById(classId);
-            if (classEntity == null) {
-                throw new EntityNotFoundException(ClassEntity.class);
-            }
 
             StudentEntity studentEntity = StudentDAO.getInstance().save(new StudentEntity(name, classEntity));
 
@@ -83,9 +75,7 @@ public class Students implements CRUDScreen {
                 Console.clear();
                 Console.println("Estudante cadastrado com sucesso!\n");
             }
-        } catch (InputMismatchException
-                | EmptyStringException
-                | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -96,23 +86,13 @@ public class Students implements CRUDScreen {
             int id = Console.readInt();
             StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
-            if (studentEntity == null) {
-                throw new EntityNotFoundException(StudentEntity.class);
-            }
-
             Console.print("Digite o novo nome do estudante: ");
             String name = Console.read();
-            if (name == null || name.isEmpty()) {
-                throw new EmptyStringException();
-            }
             studentEntity.setName(name);
 
             Console.print("Digite o novo id da turma: ");
             int classId = Console.readInt();
             ClassEntity classEntity = ClassDAO.getInstance().getById(classId);
-            if (classEntity == null) {
-                throw new EntityNotFoundException(ClassEntity.class);
-            }
             studentEntity.setClassEntity(classEntity);
 
             StudentEntity updatedStudentEntity = StudentDAO.getInstance().update(studentEntity);
@@ -121,9 +101,7 @@ public class Students implements CRUDScreen {
                 Console.clear();
                 Console.println("Estudante atualizado com sucesso!\n");
             }
-        } catch (InputMismatchException
-                | EmptyStringException
-                | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -134,10 +112,6 @@ public class Students implements CRUDScreen {
             int id = Console.readInt();
             StudentEntity studentEntity = StudentDAO.getInstance().getById(id);
 
-            if (studentEntity == null) {
-                throw new EntityNotFoundException(StudentEntity.class);
-            }
-
             LoanEntity loanEntity = LoanDAO.getInstance().getByStudentId(id);
             if (loanEntity != null) {
                 Console.clear();
@@ -147,7 +121,7 @@ public class Students implements CRUDScreen {
 
             StudentDAO.getInstance().delete(studentEntity);
             Console.println("");
-        } catch (InputMismatchException | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -162,10 +136,8 @@ public class Students implements CRUDScreen {
                 Console.clear();
                 Console.println("Estudante encontrado!\n");
                 Console.println(studentEntity);
-            } else {
-                throw new EntityNotFoundException(StudentEntity.class);
             }
-        } catch (InputMismatchException | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -183,7 +155,7 @@ public class Students implements CRUDScreen {
 
     private static final Students instance = new Students();
 
-    public static synchronized Students getInstance() {
+    public static Students getInstance() {
         return instance;
     }
 }

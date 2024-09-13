@@ -11,7 +11,7 @@ public class EntityNotFoundException extends RuntimeException {
     private static String getNotFoundMessage(Class<? extends Entity> clazz) {
         String entityName = getEntityName(clazz);
 
-        if (entityName.endsWith("a") | entityName.endsWith("de")) {
+        if (entityName.endsWith("a") || entityName.endsWith("de")) {
             return entityName + " não encontrada!";
         }
 

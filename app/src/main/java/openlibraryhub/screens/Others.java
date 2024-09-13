@@ -50,14 +50,14 @@ public class Others implements Screen {
         Console.println("OpenLibraryHub é um sistema de gerenciamento de bibliotecas.");
         Console.println("Desenvolvido por: 1ukidev");
         Console.println("GitHub: https://github.com/1ukidev/OpenLibraryHub-CLI");
-        Console.println("Versão: " + Constants.VERSION + "\n");
+        Console.println("Versão: " + Constants.VERSION + '\n');
     }
 
     private Others() {}
 
     private static final Others instance = new Others();
 
-    public static synchronized Others getInstance() {
+    public static Others getInstance() {
         return instance;
     }
 }

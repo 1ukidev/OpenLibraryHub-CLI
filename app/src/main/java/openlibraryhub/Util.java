@@ -31,16 +31,17 @@ public class Util {
     }
 
     public static void handleException(Exception e) {
-        Console.clear();
-
         if (e instanceof InputMismatchException) {
+            Console.clear();
             Console.println(Errors.INVALID_INPUT_MESSAGE);
             Console.read();
         } else if (e instanceof EmptyStringException) {
+            Console.clear();
             Console.println(Errors.EMPTY_INPUT_MESSAGE);
         } else if (e instanceof EntityNotFoundException || e instanceof IllegalDateException) {
-            Console.println(e.getMessage() + "\n");
+            Console.println('\n' + e.getMessage() + '\n');
         } else {
+            Console.clear();
             Console.println(Errors.UNEXPECTED_ERROR_MESSAGE);
             e.printStackTrace();
             Console.println("");

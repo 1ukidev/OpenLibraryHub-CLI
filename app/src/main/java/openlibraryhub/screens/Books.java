@@ -4,16 +4,14 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 
-import openlibraryhub.entities.BookEntity;
-import openlibraryhub.entities.LoanEntity;
-import openlibraryhub.exceptions.EmptyStringException;
-import openlibraryhub.exceptions.EntityNotFoundException;
-import openlibraryhub.interfaces.CRUDScreen;
 import openlibraryhub.Console;
 import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.database.BookDAO;
 import openlibraryhub.database.LoanDAO;
+import openlibraryhub.entities.BookEntity;
+import openlibraryhub.entities.LoanEntity;
+import openlibraryhub.interfaces.CRUDScreen;
 
 public class Books implements CRUDScreen {
     public void welcome() {
@@ -64,21 +62,12 @@ public class Books implements CRUDScreen {
         try {
             Console.print("Digite o nome do livro: ");
             String title = Console.read();
-            if (title == null || title.isEmpty()) {
-                throw new EmptyStringException();
-            }
 
             Console.print("Digite o nome do autor: ");
             String author = Console.read();
-            if (author == null || author.isEmpty()) {
-                throw new EmptyStringException();
-            }
 
             Console.print("Digite a seção: ");
             String section = Console.read();
-            if (section == null || section.isEmpty()) {
-                throw new EmptyStringException();
-            }
 
             Console.print("Digite o número de páginas: ");
             int pages = Console.readInt();
@@ -96,7 +85,7 @@ public class Books implements CRUDScreen {
                 Console.clear();
                 Console.println("Livro cadastrado com sucesso!\n");
             }
-        } catch (InputMismatchException | EmptyStringException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -107,29 +96,16 @@ public class Books implements CRUDScreen {
             int id = Console.readInt();
             BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
-            if (bookEntity == null) {
-                throw new EntityNotFoundException(BookEntity.class);
-            }
-
             Console.print("Digite o novo nome do livro: ");
             String title = Console.read();
-            if (title == null || title.isEmpty()) {
-                throw new EmptyStringException();
-            }
             bookEntity.setTitle(title);
 
             Console.print("Digite o novo nome do autor: ");
             String author = Console.read();
-            if (author == null || author.isEmpty()) {
-                throw new EmptyStringException();
-            }
             bookEntity.setAuthor(author);
 
             Console.print("Digite a nova seção: ");
             String section = Console.read();
-            if (section == null || section.isEmpty()) {
-                throw new EmptyStringException();
-            }
             bookEntity.setSection(section);
 
             Console.print("Digite o novo número de páginas: ");
@@ -150,9 +126,7 @@ public class Books implements CRUDScreen {
                 Console.clear();
                 Console.println("Livro atualizado com sucesso!\n");
             }
-        } catch (InputMismatchException
-                | EmptyStringException
-                | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -163,10 +137,6 @@ public class Books implements CRUDScreen {
             int id = Console.readInt();
             BookEntity bookEntity = BookDAO.getInstance().getById(id);
 
-            if (bookEntity == null) {
-                throw new EntityNotFoundException(BookEntity.class);
-            }
-
             LoanEntity loanEntity = LoanDAO.getInstance().getByBookId(id);
             if (loanEntity != null) {
                 Console.clear();
@@ -176,7 +146,7 @@ public class Books implements CRUDScreen {
 
             BookDAO.getInstance().delete(bookEntity);
             Console.println("");
-        } catch (InputMismatchException | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -191,10 +161,8 @@ public class Books implements CRUDScreen {
                 Console.clear();
                 Console.println("Livro encontrado!\n");
                 Console.println(bookEntity);
-            } else {
-                throw new EntityNotFoundException(BookEntity.class);
             }
-        } catch (InputMismatchException | EntityNotFoundException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -212,7 +180,7 @@ public class Books implements CRUDScreen {
 
     private static final Books instance = new Books();
 
-    public static synchronized Books getInstance() {
+    public static Books getInstance() {
         return instance;
     }
 }
