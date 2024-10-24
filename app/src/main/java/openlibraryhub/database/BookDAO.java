@@ -1,5 +1,9 @@
 package openlibraryhub.database;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,35 +13,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static openlibraryhub.Constants.DB_PASSWORD;
-import static openlibraryhub.Constants.DB_URL;
-import static openlibraryhub.Constants.DB_USER;
-
 import openlibraryhub.Assert;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.entities.BookEntity;
-import openlibraryhub.exceptions.IllegalObjectException;
+import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.DAO;
 
 public class BookDAO implements DAO<BookEntity>, IBookDAO {
-    private static final String NULL_BOOK = "Livro inválido!";
-    private static final String NULL_ID = "Id inválido!";
-    private static final String NULL_TITLE = "Título inválido!";
-    private static final String NULL_AUTHOR = "Autor inválido!";
-    private static final String NULL_SECTION = "Seção inválida!";
-    private static final String NULL_PAGES = "Quantidade de páginas inválidas!";
-    private static final String NULL_YEAR = "Ano inválido!";
-    private static final String NULL_STOCK = "Quantidade em estoque inválido!";
-
     public BookEntity save(BookEntity entity) {
         try {
-            Assert.check(entity != null, NULL_BOOK);
-            Assert.check(entity.getTitle() != null, NULL_TITLE);
-            Assert.check(entity.getAuthor() != null, NULL_AUTHOR);
-            Assert.check(entity.getSection() != null, NULL_SECTION);
-            Assert.check(entity.getPages() != null, NULL_PAGES);
-            Assert.check(entity.getYear() != null, NULL_YEAR);
-            Assert.check(entity.getStock() != null, NULL_STOCK);
+            Assert.check(entity != null, Errors.NULL_BOOK);
+            Assert.check(entity.getTitle() != null, Errors.NULL_TITLE);
+            Assert.check(entity.getAuthor() != null, Errors.NULL_AUTHOR);
+            Assert.check(entity.getSection() != null, Errors.NULL_SECTION);
+            Assert.check(entity.getPages() != null, Errors.NULL_PAGES);
+            Assert.check(entity.getYear() != null, Errors.NULL_YEAR);
+            Assert.check(entity.getStock() != null, Errors.NULL_STOCK);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -60,7 +52,7 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -69,14 +61,14 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
     public BookEntity update(BookEntity entity) {
         try {
-            Assert.check(entity != null, NULL_BOOK);
-            Assert.check(entity.getId() != null, NULL_ID);
-            Assert.check(entity.getTitle() != null, NULL_TITLE);
-            Assert.check(entity.getAuthor() != null, NULL_AUTHOR);
-            Assert.check(entity.getSection() != null, NULL_SECTION);
-            Assert.check(entity.getPages() != null, NULL_PAGES);
-            Assert.check(entity.getYear() != null, NULL_YEAR);
-            Assert.check(entity.getStock() != null, NULL_STOCK);
+            Assert.check(entity != null, Errors.NULL_BOOK);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
+            Assert.check(entity.getTitle() != null, Errors.NULL_TITLE);
+            Assert.check(entity.getAuthor() != null, Errors.NULL_AUTHOR);
+            Assert.check(entity.getSection() != null, Errors.NULL_SECTION);
+            Assert.check(entity.getPages() != null, Errors.NULL_PAGES);
+            Assert.check(entity.getYear() != null, Errors.NULL_YEAR);
+            Assert.check(entity.getStock() != null, Errors.NULL_STOCK);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -95,7 +87,7 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -104,8 +96,8 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
     public void delete(BookEntity entity) {
         try {
-            Assert.check(entity != null, NULL_BOOK);
-            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity != null, Errors.NULL_BOOK);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -118,7 +110,7 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -127,7 +119,7 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
         BookEntity entity = null;    
 
         try {
-            Assert.check(id != null, NULL_ID);
+            Assert.check(id != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -151,8 +143,12 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
+        }
+
+        if (entity == null) {
+            throw new EntityNotFoundException(BookEntity.class);
         }
 
         return entity;
@@ -193,7 +189,7 @@ public class BookDAO implements DAO<BookEntity>, IBookDAO {
 
     private static final BookDAO instance = new BookDAO();
 
-    public static synchronized BookDAO getInstance() {
+    public static BookDAO getInstance() {
         return instance;
     }
 }

@@ -1,5 +1,9 @@
 package openlibraryhub.database;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,25 +13,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static openlibraryhub.Constants.DB_PASSWORD;
-import static openlibraryhub.Constants.DB_URL;
-import static openlibraryhub.Constants.DB_USER;
-
 import openlibraryhub.Assert;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.entities.ClassEntity;
-import openlibraryhub.exceptions.IllegalObjectException;
+import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.DAO;
 
 public class ClassDAO implements DAO<ClassEntity> {
-    private static final String NULL_CLASS = "Turma inválida!";
-    private static final String NULL_ID = "Id inválido!";
-    private static final String NULL_NAME = "Nome inválido!";
-
     public ClassEntity save(ClassEntity entity) {
         try {
-            Assert.check(entity != null, NULL_CLASS);
-            Assert.check(entity.getName() != null, NULL_NAME);
+            Assert.check(entity != null, Errors.NULL_CLASS);
+            Assert.check(entity.getName() != null, Errors.NULL_NAME);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -45,7 +42,7 @@ public class ClassDAO implements DAO<ClassEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -54,8 +51,8 @@ public class ClassDAO implements DAO<ClassEntity> {
 
     public ClassEntity update(ClassEntity entity) {
         try {
-            Assert.check(entity != null, NULL_CLASS);
-            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity != null, Errors.NULL_CLASS);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -69,7 +66,7 @@ public class ClassDAO implements DAO<ClassEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -78,8 +75,8 @@ public class ClassDAO implements DAO<ClassEntity> {
 
     public void delete(ClassEntity entity) {
         try {
-            Assert.check(entity != null, NULL_CLASS);
-            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity != null, Errors.NULL_CLASS);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -92,7 +89,7 @@ public class ClassDAO implements DAO<ClassEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -101,7 +98,7 @@ public class ClassDAO implements DAO<ClassEntity> {
         ClassEntity entity = null;
 
         try {
-            Assert.check(id != null, NULL_ID);
+            Assert.check(id != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -120,8 +117,12 @@ public class ClassDAO implements DAO<ClassEntity> {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
+        }
+
+        if (entity == null) {
+            throw new EntityNotFoundException(ClassEntity.class);
         }
 
         return entity;
@@ -157,7 +158,7 @@ public class ClassDAO implements DAO<ClassEntity> {
 
     private static final ClassDAO instance = new ClassDAO();
 
-    public static synchronized ClassDAO getInstance() {
+    public static ClassDAO getInstance() {
         return instance;
     }
 }

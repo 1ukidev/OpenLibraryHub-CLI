@@ -13,7 +13,7 @@ public class Home implements Screen {
         boolean running = true;
         while (running) {
             Console.println("Bem-vindo ao OpenLibraryHub!\n");
-            Console.println(Util.greet() + "\n");
+            Console.println(Util.greet() + '\n');
             Console.println("O que deseja fazer?");
             Console.println("1 - Livros");
             Console.println("2 - Turmas");
@@ -60,7 +60,7 @@ public class Home implements Screen {
 
     private static final Home instance = new Home();
 
-    public static synchronized Home getInstance() {
+    public static Home getInstance() {
         return instance;
     }
 }

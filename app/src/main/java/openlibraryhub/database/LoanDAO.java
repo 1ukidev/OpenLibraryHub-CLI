@@ -1,5 +1,9 @@
 package openlibraryhub.database;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,31 +13,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static openlibraryhub.Constants.DB_PASSWORD;
-import static openlibraryhub.Constants.DB_URL;
-import static openlibraryhub.Constants.DB_USER;
-
 import openlibraryhub.Assert;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.entities.LoanEntity;
-import openlibraryhub.exceptions.IllegalObjectException;
+import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.DAO;
 
 public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
-    private static final String NULL_LOAN = "Empréstimo inválido!";
-    private static final String NULL_ID = "Id inválido!";
-    private static final String NULL_BOOK = "Livro inválido!";
-    private static final String NULL_STUDENT = "Estudante inválido!";
-    private static final String NULL_LOAN_DATE = "Data de empréstimo inválida!";
-    private static final String NULL_RETURN_DATE = "Data de devolução inválida!";
-
     public LoanEntity save(LoanEntity entity) {
         try {
-            Assert.check(entity != null, NULL_LOAN);
-            Assert.check(entity.getBookEntity() != null, NULL_BOOK);
-            Assert.check(entity.getStudentEntity() != null, NULL_STUDENT);
-            Assert.check(entity.getLoanDate() != null, NULL_LOAN_DATE);
-            Assert.check(entity.getReturnDate() != null, NULL_RETURN_DATE);
+            Assert.check(entity != null, Errors.NULL_LOAN);
+            Assert.check(entity.getBookEntity() != null, Errors.NULL_BOOK);
+            Assert.check(entity.getStudentEntity() != null, Errors.NULL_STUDENT);
+            Assert.check(entity.getLoanDate() != null, Errors.NULL_LOAN_DATE);
+            Assert.check(entity.getReturnDate() != null, Errors.NULL_RETURN_DATE);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -54,7 +48,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -63,12 +57,12 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
     public LoanEntity update(LoanEntity entity) {
         try {
-            Assert.check(entity != null, NULL_LOAN);
-            Assert.check(entity.getId() != null, NULL_ID);
-            Assert.check(entity.getBookEntity() != null, NULL_BOOK);
-            Assert.check(entity.getStudentEntity() != null, NULL_STUDENT);
-            Assert.check(entity.getLoanDate() != null, NULL_LOAN_DATE);
-            Assert.check(entity.getReturnDate() != null, NULL_RETURN_DATE);
+            Assert.check(entity != null, Errors.NULL_LOAN);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
+            Assert.check(entity.getBookEntity() != null, Errors.NULL_BOOK);
+            Assert.check(entity.getStudentEntity() != null, Errors.NULL_STUDENT);
+            Assert.check(entity.getLoanDate() != null, Errors.NULL_LOAN_DATE);
+            Assert.check(entity.getReturnDate() != null, Errors.NULL_RETURN_DATE);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -85,7 +79,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -94,8 +88,8 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
     public void delete(LoanEntity entity) {
         try {
-            Assert.check(entity != null, NULL_LOAN);
-            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity != null, Errors.NULL_LOAN);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -107,7 +101,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -116,7 +110,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
         LoanEntity entity = null;
 
         try {
-            Assert.check(id != null, NULL_ID);
+            Assert.check(id != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -138,8 +132,12 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
+        }
+
+        if (entity == null) {
+            throw new EntityNotFoundException(LoanEntity.class);
         }
 
         return entity;
@@ -178,7 +176,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
         LoanEntity entity = null;
 
         try {
-            Assert.check(studentId != null, NULL_ID);
+            Assert.check(studentId != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -200,7 +198,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -211,7 +209,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
         LoanEntity entity = null;
 
         try {
-            Assert.check(bookId != null, NULL_BOOK);
+            Assert.check(bookId != null, Errors.NULL_BOOK);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -233,7 +231,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -244,7 +242,7 @@ public class LoanDAO implements DAO<LoanEntity>, ILoanDAO {
 
     private static final LoanDAO instance = new LoanDAO();
 
-    public static synchronized LoanDAO getInstance() {
+    public static LoanDAO getInstance() {
         return instance;
     }
 }

@@ -1,5 +1,9 @@
 package openlibraryhub.database;
 
+import static openlibraryhub.Constants.DB_PASSWORD;
+import static openlibraryhub.Constants.DB_URL;
+import static openlibraryhub.Constants.DB_USER;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,27 +13,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static openlibraryhub.Constants.DB_PASSWORD;
-import static openlibraryhub.Constants.DB_URL;
-import static openlibraryhub.Constants.DB_USER;
-
 import openlibraryhub.Assert;
+import openlibraryhub.Errors;
 import openlibraryhub.Util;
 import openlibraryhub.entities.StudentEntity;
-import openlibraryhub.exceptions.IllegalObjectException;
+import openlibraryhub.exceptions.EntityNotFoundException;
 import openlibraryhub.interfaces.DAO;
 
 public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
-    private static final String NULL_STUDENT = "Estudante inválido!";
-    private static final String NULL_ID = "Id inválido!";
-    private static final String NULL_NAME = "Nome inválido!";
-    private static final String NULL_CLASS = "Turma inválida!";
-
     public StudentEntity save(StudentEntity entity) {
         try {
-            Assert.check(entity != null, NULL_STUDENT);
-            Assert.check(entity.getName() != null, NULL_NAME);
-            Assert.check(entity.getClassEntity() != null, NULL_CLASS);
+            Assert.check(entity != null, Errors.NULL_STUDENT);
+            Assert.check(entity.getName() != null, Errors.NULL_NAME);
+            Assert.check(entity.getClassEntity() != null, Errors.NULL_CLASS);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -48,7 +44,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -57,10 +53,10 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
     public StudentEntity update(StudentEntity entity) {
         try {
-            Assert.check(entity != null, NULL_STUDENT);
-            Assert.check(entity.getId() != null, NULL_ID);
-            Assert.check(entity.getName() != null, NULL_NAME);
-            Assert.check(entity.getClassEntity() != null, NULL_CLASS);
+            Assert.check(entity != null, Errors.NULL_STUDENT);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
+            Assert.check(entity.getName() != null, Errors.NULL_NAME);
+            Assert.check(entity.getClassEntity() != null, Errors.NULL_CLASS);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -75,7 +71,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -84,8 +80,8 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
     public void delete(StudentEntity entity) {
         try {
-            Assert.check(entity != null, NULL_STUDENT);
-            Assert.check(entity.getId() != null, NULL_ID);
+            Assert.check(entity != null, Errors.NULL_STUDENT);
+            Assert.check(entity.getId() != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -98,7 +94,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
     }
@@ -126,8 +122,12 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
+        }
+
+        if (entity == null) {
+            throw new EntityNotFoundException(StudentEntity.class);
         }
 
         return entity;
@@ -164,7 +164,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
         List<StudentEntity> entities = new ArrayList<>();
 
         try {
-            Assert.check(classId != null, NULL_ID);
+            Assert.check(classId != null, Errors.NULL_ID);
 
             Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
@@ -185,7 +185,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
             pstmt.close();
             conn.close();
-        } catch (SQLException | IllegalObjectException e) {
+        } catch (Exception e) {
             Util.handleException(e);
         }
 
@@ -196,7 +196,7 @@ public class StudentDAO implements DAO<StudentEntity>, IStudentDAO {
 
     private static final StudentDAO instance = new StudentDAO();
 
-    public static synchronized StudentDAO getInstance() {
+    public static StudentDAO getInstance() {
         return instance;
     }
 }
