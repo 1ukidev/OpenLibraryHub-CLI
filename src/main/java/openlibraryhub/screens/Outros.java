@@ -40,7 +40,7 @@ public class Outros implements Screen {
         return true;
     }
 
-    public void about() {
+    private void about() {
         Console.println("OpenLibraryHub é um sistema de gerenciamento de bibliotecas.");
         Console.println("Desenvolvido por: 1ukidev");
         Console.println("GitHub: https://github.com/1ukidev/OpenLibraryHub-CLI");

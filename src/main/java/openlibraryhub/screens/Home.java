@@ -30,7 +30,7 @@ public class Home implements Screen {
         while (running) {
             Console.println("Bem-vindo ao OpenLibraryHub!\n");
             Console.println(Util.greet() + '\n');
-            Console.println("O que deseja fazer?");
+            Console.println("O que deseja fazer?\n");
             Console.println("1 - Livros");
             Console.println("2 - Turmas");
             Console.println("3 - Alunos");

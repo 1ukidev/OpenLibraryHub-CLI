@@ -3,6 +3,7 @@ package openlibraryhub;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.function.Function;
 
 public class Console {
     private static Scanner scanner = new Scanner(System.in);
@@ -21,27 +22,34 @@ public class Console {
     }
 
     public static String readString() {
-        while (true) {
-            String value = scanner.nextLine();
-            if (!value.isEmpty()) return value;
+        String value;
+
+        try {
+            value = scanner.nextLine();
+        } catch (Exception e) {
+            print("Valor inválido. Digite um texto: ");
+            return readString();
         }
+
+        if (value.isEmpty()) {
+            return readString();
+        }
+
+        return value;
     }
 
     public static int readInt() {
-        int value = scanner.nextInt();
-        scanner.nextLine();
-        return value;
+        return readNumber("Valor inválido. Digite um número inteiro: ", Integer::parseInt);
     }
 
     public static long readLong() {
-        long value = scanner.nextLong();
-        scanner.nextLine();
-        return value;
+        return readNumber("Valor inválido. Digite um número inteiro: ", Long::parseLong);
     }
 
     public static LocalDate readLocalDate() {
         String value = readString();
         LocalDate date = null;
+
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             date = LocalDate.parse(value, formatter);
@@ -49,6 +57,21 @@ public class Console {
             print("Data inválida. Digite no formato [DD/MM/YYYY]: ");
             return readLocalDate();
         }
+
         return date;
+    }
+
+    private static <T> T readNumber(String errorMessage, Function<String, T> parser) {
+        String value = readString();
+        T number = null;
+
+        try {
+            number = parser.apply(value);
+        } catch (Exception e) {
+            print(errorMessage);
+            return readNumber(errorMessage, parser);
+        }
+
+        return number;
     }
 }

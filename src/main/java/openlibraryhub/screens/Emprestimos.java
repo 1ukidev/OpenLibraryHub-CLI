@@ -106,8 +106,9 @@ public class Emprestimos implements CRUDScreen {
         Console.print("Digite a data de devolução: ");
         LocalDate dataDevolucao = Console.readLocalDate();
 
-        EmprestimoEntity emprestimo = new EmprestimoEntity(aluno.get(), livro.get(), dataEmprestimo, dataDevolucao);
-        
+        EmprestimoEntity emprestimo = new EmprestimoEntity(aluno.get(), livro.get(),
+                                                           dataEmprestimo, dataDevolucao);
+
         repository.save(emprestimo);
 
         Console.clear();
