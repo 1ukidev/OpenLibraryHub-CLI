@@ -74,9 +74,7 @@ public class Turmas implements CRUDScreen {
         Console.print("Digite o nome da turma: ");
         String nome = Console.readString();
 
-        TurmaEntity turma = new TurmaEntity(nome);
-
-        repository.save(turma);
+        repository.save(new TurmaEntity(nome));
 
         Console.clear();
         Console.println("Turma cadastrada com sucesso!\n");

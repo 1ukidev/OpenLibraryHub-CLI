@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "alunos")
 @Getter @Setter @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class AlunoEntity extends openlibraryhub.entities.Entity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

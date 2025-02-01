@@ -89,10 +89,8 @@ public class Livros implements CRUDScreen {
         Console.print("Digite a quantida em estoque: ");
         int estoque = Console.readInt();
 
-        LivroEntity livro = new LivroEntity(titulo, autor, secao,
-                                            paginas, ano, estoque);
-
-        repository.save(livro);
+        repository.save(new LivroEntity(titulo, autor, secao,
+                                        paginas, ano, estoque));
 
         Console.clear();
         Console.println("Livro cadastrado com sucesso!\n");

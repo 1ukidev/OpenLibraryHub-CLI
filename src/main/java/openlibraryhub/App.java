@@ -10,20 +10,20 @@ import openlibraryhub.screens.Home;
 
 @SpringBootApplication
 public class App {
-	public static void main(String[] args) {
-		Console.println("Iniciando aplicação...");
-		SpringApplication.run(App.class, args);
-	}
+    public static void main(String[] args) {
+        Console.println("Iniciando aplicação...");
+        SpringApplication.run(App.class, args);
+    }
 }
 
 @Component
 class MyCommandLineRunner implements CommandLineRunner {
-	@Autowired
-	private Home home;
+    @Autowired
+    private Home home;
 
-	@Override
+    @Override
     public void run(String... args) {
-		Console.clear();
-		home.display();
+        Console.clear();
+        home.display();
     }
 }

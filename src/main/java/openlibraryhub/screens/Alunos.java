@@ -88,9 +88,7 @@ public class Alunos implements CRUDScreen {
             return;
         }
 
-        AlunoEntity aluno = new AlunoEntity(nome, turma.get());
-
-        repository.save(aluno);
+        repository.save(new AlunoEntity(nome, turma.get()));
 
         Console.clear();
         Console.println("Aluno cadastrado com sucesso!\n");
