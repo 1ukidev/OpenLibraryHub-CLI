@@ -2,11 +2,13 @@ package openlibraryhub;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.function.Function;
 
 public class Console {
     private static Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void println(Object obj) {
         System.out.println(obj);
@@ -22,20 +24,20 @@ public class Console {
     }
 
     public static String readString() {
-        String value;
+        while (true) {
+            try {
+                String value = scanner.nextLine().trim();
 
-        try {
-            value = scanner.nextLine();
-        } catch (Exception e) {
-            print("Valor inválido. Digite um texto: ");
-            return readString();
+                if (!value.isEmpty()) {
+                    return value;
+                }
+
+                print("Entrada vazia. Digite um texto: ");
+            } catch (Exception e) {
+                print("Valor inválido. Digite um texto: ");
+                scanner.next();
+            }
         }
-
-        if (value.isEmpty()) {
-            return readString();
-        }
-
-        return value;
     }
 
     public static int readInt() {
@@ -47,31 +49,24 @@ public class Console {
     }
 
     public static LocalDate readLocalDate() {
-        String value = readString();
-        LocalDate date = null;
-
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            date = LocalDate.parse(value, formatter);
-        } catch (Exception e) {
-            print("Data inválida. Digite no formato [DD/MM/YYYY]: ");
-            return readLocalDate();
+        while (true) {
+            try {
+                String value = readString();
+                return LocalDate.parse(value, formatter);
+            } catch (DateTimeParseException e) {
+                print("Data inválida. Digite no formato [DD/MM/YYYY]: ");
+            }
         }
-
-        return date;
     }
 
-    private static <T> T readNumber(String errorMessage, Function<String, T> parser) {
-        String value = readString();
-        T number = null;
-
-        try {
-            number = parser.apply(value);
-        } catch (Exception e) {
-            print(errorMessage);
-            return readNumber(errorMessage, parser);
+    private static <T extends Number> T readNumber(String errorMessage, Function<String, T> parser) {
+        while (true) {
+            try {
+                String value = readString();
+                return parser.apply(value);
+            } catch (Exception e) {
+                print(errorMessage);
+            }
         }
-
-        return number;
     }
 }

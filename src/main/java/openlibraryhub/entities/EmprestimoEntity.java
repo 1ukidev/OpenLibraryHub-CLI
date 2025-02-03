@@ -53,7 +53,7 @@ public class EmprestimoEntity extends openlibraryhub.entities.Entity {
         return "Id: " + id + '\n' +
                "Aluno: " + aluno.getNome() + '\n' +
                "Livro: " + livro.getTitulo() + '\n' +
-               "Data de empréstimo: " + Util.formatDate(dataEmprestimo) + '\n' +
-               "Data de devolução: " + Util.formatDate(dataDevolucao) + '\n';
+               "Data de empréstimo: " + Util.formatDefaultDate(dataEmprestimo) + '\n' +
+               "Data de devolução: " + Util.formatDefaultDate(dataDevolucao) + '\n';
     }
 }

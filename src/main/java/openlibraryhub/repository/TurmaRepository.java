@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 import openlibraryhub.entities.TurmaEntity;
 
 @Repository
-public interface TurmaRepository extends JpaRepository<TurmaEntity, Long> {
-}
+public interface TurmaRepository extends JpaRepository<TurmaEntity, Long> {}

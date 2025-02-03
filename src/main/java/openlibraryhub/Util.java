@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Util {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     public static String greet() {
         int hours = LocalTime.now().getHour();
 
@@ -17,11 +19,7 @@ public class Util {
         }
     }
 
-    public static String formatDate(LocalDate date, String pattern) {
-        return date.format(DateTimeFormatter.ofPattern(pattern));
-    }
-
-    public static String formatDate(LocalDate date) {
-        return formatDate(date, "dd/MM/yyyy");
+    public static String formatDefaultDate(LocalDate date) {
+        return date.format(formatter);
     }
 }

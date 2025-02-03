@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 import openlibraryhub.entities.LivroEntity;
 
 @Repository
-public interface LivroRepository extends JpaRepository<LivroEntity, Long> {
-}
+public interface LivroRepository extends JpaRepository<LivroEntity, Long> {}

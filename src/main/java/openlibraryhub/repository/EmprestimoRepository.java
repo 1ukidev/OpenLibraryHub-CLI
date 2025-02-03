@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 import openlibraryhub.entities.EmprestimoEntity;
 
 @Repository
-public interface EmprestimoRepository extends JpaRepository<EmprestimoEntity, Long> {
-}
+public interface EmprestimoRepository extends JpaRepository<EmprestimoEntity, Long> {}
